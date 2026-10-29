@@ -1,6 +1,7 @@
 import Plan from '../models/Plan.js';
 import { ApiError } from '../utils/ApiError.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
+import { escapeRegex } from '../utils/text.js';
 
 // Allowed ?sort= values mapped to MongoDB sort objects
 const SORTS = {
@@ -10,8 +11,6 @@ const SORTS = {
   'fee-desc': { monthlyFeeLKR: -1 },
   'speed-desc': { downMbps: -1 },
 };
-
-const escapeRegex = (text) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 // GET /api/plans?search=&technology=&status=active|inactive&sort=
 export const listPlans = asyncHandler(async (req, res) => {
