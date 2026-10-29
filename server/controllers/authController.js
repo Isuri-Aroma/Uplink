@@ -25,3 +25,9 @@ export const login = asyncHandler(async (req, res) => {
 export const me = asyncHandler(async (req, res) => {
   res.json(req.user);
 });
+
+// GET /api/auth/staff  (active staff for "assign to" lists)
+export const staffList = asyncHandler(async (req, res) => {
+  const staff = await User.find({ isActive: true }, 'name role').sort({ name: 1 });
+  res.json(staff);
+});

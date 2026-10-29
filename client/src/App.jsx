@@ -10,6 +10,8 @@ import CustomersPage from './features/customers/CustomersPage';
 import CustomerDetailsPage from './features/customers/CustomerDetailsPage';
 import SubscriptionsPage from './features/subscriptions/SubscriptionsPage';
 import SubscriptionDetailsPage from './features/subscriptions/SubscriptionDetailsPage';
+import TicketsPage from './features/tickets/TicketsPage';
+import TicketDetailsPage from './features/tickets/TicketDetailsPage';
 
 export default function App() {
   return (
@@ -25,7 +27,8 @@ export default function App() {
           <Route path="plans" element={<PlansPage />} />
           <Route path="subscriptions" element={<SubscriptionsPage />} />
           <Route path="subscriptions/:id" element={<SubscriptionDetailsPage />} />
-          <Route path="tickets" element={<PlaceholderPage title="Trouble Tickets" />} />
+          <Route path="tickets" element={<TicketsPage />} />
+          <Route path="tickets/:id" element={<TicketDetailsPage />} />
           <Route element={<RequireAdmin />}>
             <Route path="staff" element={<PlaceholderPage title="Access Control" />} />
           </Route>

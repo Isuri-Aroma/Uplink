@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import Ticket, { TICKET_CHANGES } from '../models/Ticket.js';
 import Subscription from '../models/Subscription.js';
 import Customer from '../models/Customer.js';
@@ -19,7 +20,7 @@ const withDetails = (query) =>
     .populate('activity.by', 'name')
     .populate({
     path: 'subscription',
-    select: 'accountNo status installAddress customer plan',
+    select: 'accountNo status installAddress customer plan routerSerial',
     populate: [
       { path: 'customer', select: 'nameWithInitials mobile nic' },
       { path: 'plan', select: 'name technology' },
@@ -58,15 +59,22 @@ export const listTickets = asyncHandler(async (req, res) => {
     );
     filter.$or = [{ ticketNo: rx }, { subject: rx }, { subscription: { $in: subscriptions.map((s) => s._id) } }];
   }
-  if (status) filter.status = status;
   if (priority) filter.priority = priority;
   if (category) filter.category = category;
   if (assignedTo === 'me') filter.assignedTo = req.user._id;
   else if (assignedTo === 'none') filter.assignedTo = null;
-  else if (assignedTo) filter.assignedTo = assignedTo;
+  else if (assignedTo && mongoose.isValidObjectId(assignedTo)) filter.assignedTo = new mongoose.Types.ObjectId(assignedTo);
+
+  // Counts for the view tabs (ignores the status filter)
+  const grouped = await Ticket.aggregate([{ $match: filter }, { $group: { _id: '$status', total: { $sum: 1 } } }]);
+  const counts = Object.fromEntries(grouped.map((g) => [g._id, g.total]));
+
+  // "queue" = tickets still being worked on
+  if (status === 'queue') filter.status = { $in: ['Open', 'In Progress'] };
+  else if (status) filter.status = status;
 
   const tickets = await withDetails(Ticket.find(filter)).sort(SORTS[sort] || SORTS.newest);
-  res.json({ count: tickets.length, tickets });
+  res.json({ count: tickets.length, counts, tickets });
 });
 
 // GET /api/tickets/:id

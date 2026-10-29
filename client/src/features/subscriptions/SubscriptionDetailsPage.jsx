@@ -1,18 +1,20 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Pencil, Trash2 } from 'lucide-react';
+import { ArrowLeft, LifeBuoy, Pencil, Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { ACTIONS, changeSubscriptionStatus, deleteSubscription, getSubscription } from '../../api/subscriptions';
 import { readError } from '../../api/client';
 import { useAuth } from '../../context/AuthContext';
-import { dataCap, dateTime, lkr, shortDate, speed } from '../../utils/format';
+import { dataCap, lkr, shortDate, speed } from '../../utils/format';
 import { SUBSCRIPTION_TONE } from '../../utils/status';
 import Badge from '../../components/ui/Badge';
 import TechTile from '../../components/ui/TechTile';
 import UsageBar from '../../components/ui/UsageBar';
 import ConfirmDialog from '../../components/ui/ConfirmDialog';
 import StatusDialog from '../../components/ui/StatusDialog';
+import Timeline from '../../components/ui/Timeline';
 import SubscriptionDrawer from './SubscriptionDrawer';
+import TicketDrawer from '../tickets/TicketDrawer';
 
 const ACTION_BUTTON = {
   primary: 'btn-primary',
@@ -42,6 +44,7 @@ export default function SubscriptionDetailsPage() {
   const [busy, setBusy] = useState(false);
   const [actionError, setActionError] = useState('');
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [reporting, setReporting] = useState(null);
 
   const load = useCallback(async () => {
     try {
@@ -102,7 +105,10 @@ export default function SubscriptionDetailsPage() {
   const terminated = sub.status === 'Terminated';
   // Same status as the step before = a detail change, not a status change
   const history = sub.statusHistory
-    .map((h, i) => ({ ...h, changed: i === 0 || h.status !== sub.statusHistory[i - 1].status }))
+    .map((h, i) => {
+      const changed = i === 0 || h.status !== sub.statusHistory[i - 1].status;
+      return { ...h, label: changed ? h.status : 'Updated', dot: changed ? DOT[h.status] : 'bg-line' };
+    })
     .reverse();
 
   return (
@@ -129,6 +135,11 @@ export default function SubscriptionDetailsPage() {
           {ACTIONS[sub.status].map((a) => (
             <button key={a.to} className={ACTION_BUTTON[a.tone]} onClick={() => openAction(a)}>{a.label}</button>
           ))}
+          {!terminated && (
+            <button className="btn-ghost border border-line" onClick={() => setReporting({ subscriptionId: sub._id })}>
+              <LifeBuoy size={16} /> Report fault
+            </button>
+          )}
           {!terminated && (
             <button className="btn-ghost border border-line" onClick={() => setEditing({ subscription: sub })}>
               <Pencil size={16} /> Edit
@@ -168,18 +179,11 @@ export default function SubscriptionDetailsPage() {
 
         <section className="card p-5">
           <h2 className="mb-4 font-bold">Status history</h2>
-          <ol className="relative flex flex-col gap-5 border-l border-line pl-5">
-            {history.map((h, i) => (
-              <li key={i} className="relative">
-                <span className={`absolute -left-[26px] top-1 h-3 w-3 rounded-full ring-4 ring-surface ${h.changed ? DOT[h.status] : 'bg-line'}`} />
-                <p className="text-sm font-bold">{h.changed ? h.status : 'Updated'}</p>
-                {h.note && <p className="text-sm">{h.note}</p>}
-                <p className="text-xs text-muted">{dateTime(h.at)}{h.by?.name && ` · ${h.by.name}`}</p>
-              </li>
-            ))}
-          </ol>
+          <Timeline items={history} />
         </section>
       </div>
+
+      <TicketDrawer open={reporting} onClose={() => setReporting(null)} onSaved={(tk) => navigate(`/tickets/${tk._id}`)} />
 
       <SubscriptionDrawer open={editing} onClose={() => setEditing(null)} onSaved={(s) => { setEditing(null); setSub(s); }} />
 

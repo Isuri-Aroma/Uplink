@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { body } from 'express-validator';
-import { login, me } from '../controllers/authController.js';
+import { login, me, staffList } from '../controllers/authController.js';
 import { protect } from '../middleware/auth.js';
 import { validate } from '../middleware/validate.js';
 
@@ -14,5 +14,6 @@ router.post(
   login
 );
 router.get('/me', protect, me);
+router.get('/staff', protect, staffList);
 
 export default router;
