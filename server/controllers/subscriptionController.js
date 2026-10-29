@@ -1,6 +1,7 @@
 import Subscription, { ALLOWED_CHANGES } from '../models/Subscription.js';
 import Customer from '../models/Customer.js';
 import Plan from '../models/Plan.js';
+import Ticket from '../models/Ticket.js';
 import { nextNumber } from '../models/Counter.js';
 import { ApiError } from '../utils/ApiError.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
@@ -117,7 +118,7 @@ export const changeStatus = asyncHandler(async (req, res) => {
     throw new ApiError(
       400,
       allowed.length
-        ? `A ${subscription.status} subscription can only be changed to: ${allowed.join(', ')}`
+        ? `${subscription.accountNo} is ${subscription.status}. It can only be changed to: ${allowed.join(', ')}`
         : 'A terminated subscription cannot be changed'
     );
   }
@@ -137,6 +138,10 @@ export const deleteSubscription = asyncHandler(async (req, res) => {
   if (!subscription) throw new ApiError(404, 'Subscription not found');
   if (['Active', 'Suspended'].includes(subscription.status)) {
     throw new ApiError(409, `${subscription.accountNo} is ${subscription.status}. Terminate it before deleting.`);
+  }
+  const ticketCount = await Ticket.countDocuments({ subscription: subscription._id });
+  if (ticketCount > 0) {
+    throw new ApiError(409, `${subscription.accountNo} has ${ticketCount} ticket(s) on record. Delete them first.`);
   }
 
   await subscription.deleteOne();
