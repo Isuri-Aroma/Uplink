@@ -9,6 +9,7 @@ import Customer from '../models/Customer.js';
 import Subscription from '../models/Subscription.js';
 import Ticket from '../models/Ticket.js';
 import Counter, { nextNumber } from '../models/Counter.js';
+import AccessRequest from '../models/AccessRequest.js';
 
 const DAY = 24 * 60 * 60 * 1000;
 const daysAgo = (d, hour = 10) => {
@@ -99,7 +100,7 @@ const tickets = [
 async function seed() {
   await connectDB(process.env.MONGODB_URI);
   console.log('Clearing old data...');
-  await Promise.all([User, Plan, Customer, Subscription, Ticket, Counter].map((m) => m.deleteMany({})));
+  await Promise.all([User, Plan, Customer, Subscription, Ticket, Counter, AccessRequest].map((m) => m.deleteMany({})));
 
   // Staff are saved one by one so their passwords get hashed
   const users = [];
@@ -176,8 +177,19 @@ async function seed() {
     await Ticket.create({ ...ticket, activity });
   }
 
+  // Access requests waiting for an admin
+  const requests = [
+    { name: 'Chamodi Wijesekara', email: 'chamodi@uplink.lk', employeeId: 'UPL-1043', team: 'Customer Care', reason: 'Joined the Kandy branch customer care team this week.' },
+    { name: 'Lahiru Bandaranayake', email: 'lahiru@uplink.lk', employeeId: 'UPL-1051', team: 'Field Operations', reason: 'Fibre installation technician for the Gampaha region.' },
+    { name: 'Amal Perera', email: 'amal.p@uplink.lk', employeeId: 'UPL-0999', team: 'Sales', reason: 'Need to see customer plans for sales follow-ups.',
+      status: 'Rejected', rejectReason: 'Sales staff use the sales portal, not Uplink', reviewedBy: admin._id, reviewedAt: daysAgo(2) },
+  ];
+  for (const [i, r] of requests.entries()) {
+    await AccessRequest.create({ ...r, password: 'Welcome123', createdAt: daysAgo(3 - i, 9 + i) });
+  }
+
   console.log(`Seeded ${users.length} staff, ${planDocs.length} plans, ${customerDocs.length} customers, ` +
-    `${subDocs.length} subscriptions, ${tickets.length} tickets.\n`);
+    `${subDocs.length} subscriptions, ${tickets.length} tickets, ${requests.length} access requests.\n`);
   console.log('Sign in with:');
   console.log('  Admin  admin@uplink.lk   / Admin@1234');
   console.log('  Agent  supun@uplink.lk   / Agent@1234');

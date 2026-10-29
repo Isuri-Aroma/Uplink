@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Loader2, Pencil, Plus, Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { createUser, deleteUser, listUsers, updateUser } from '../../api/users';
@@ -14,6 +15,8 @@ import Badge from '../../components/ui/Badge';
 import Drawer from '../../components/ui/Drawer';
 import ConfirmDialog from '../../components/ui/ConfirmDialog';
 import StaffForm from './StaffForm';
+import AccessRequestsPanel from './AccessRequestsPanel';
+import { listAccessRequests } from '../../api/accessRequests';
 
 const SORT_OPTIONS = [
   { value: 'name', label: 'Name A–Z' },
@@ -25,6 +28,9 @@ const initials = (name) => name.split(' ').map((w) => w[0]).join('').slice(0, 2)
 
 export default function StaffPage() {
   const { user: me } = useAuth();
+  const [params, setParams] = useSearchParams();
+  const tab = params.get('tab') === 'requests' ? 'requests' : 'staff';
+  const [pending, setPending] = useState(0);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -55,6 +61,14 @@ export default function StaffPage() {
   useEffect(() => {
     load();
   }, [load]);
+
+  const loadPending = useCallback(() => {
+    listAccessRequests({ status: 'Pending' }).then((d) => setPending(d.counts.Pending || 0)).catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    loadPending();
+  }, [loadPending]);
 
   const isSelf = (u) => u?._id === me?._id;
 
@@ -152,13 +166,34 @@ export default function StaffPage() {
       <PageHeader
         title="Access Control"
         description={loading ? 'Loading staff…' : `${users.length} staff · ${admins} admin · ${disabled} disabled`}
-        actions={
+        actions={tab === 'staff' && (
           <button className="btn-primary" onClick={() => openForm()}>
             <Plus size={16} /> Add staff
           </button>
-        }
+        )}
       />
 
+      <div className="flex gap-6 border-b border-line" role="tablist" aria-label="Access Control">
+        {[['staff', 'Staff accounts'], ['requests', 'Access requests']].map(([key, label]) => (
+          <button
+            key={key}
+            role="tab"
+            aria-selected={tab === key}
+            onClick={() => setParams(key === 'requests' ? { tab: 'requests' } : {})}
+            className={`-mb-px flex h-10 items-center gap-2 border-b-2 text-sm font-bold ${tab === key ? 'border-primary text-ink' : 'border-transparent text-muted hover:text-ink'}`}
+          >
+            {label}
+            {key === 'requests' && pending > 0 && (
+              <span className="rounded-full bg-bad px-2 font-mono text-xs text-white dark:text-bg">{pending}</span>
+            )}
+          </button>
+        ))}
+      </div>
+
+      {tab === 'requests' ? (
+        <AccessRequestsPanel onChanged={() => { loadPending(); load(); window.dispatchEvent(new Event('uplink:requests-changed')); }} />
+      ) : (
+      <>
       <div className="flex flex-wrap items-center gap-2">
         <SearchInput id="staff-search" value={search} onChange={setSearch} placeholder="Search name or email" />
         <SelectFilter id="staff-role-filter" label="Role" value={role} onChange={setRole}
@@ -175,6 +210,8 @@ export default function StaffPage() {
         onRowClick={openForm}
         empty={{ title: 'No staff match', message: 'Try a different search or filter.' }}
       />
+      </>
+      )}
 
       <Drawer
         open={!!editing}

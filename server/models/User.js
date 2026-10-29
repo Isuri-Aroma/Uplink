@@ -29,8 +29,11 @@ const userSchema = new mongoose.Schema(
 );
 
 // Hash the password whenever it is set or changed
+const isHash = (v) => /^\$2[aby]\$\d{2}\$.{53}$/.test(v);
+
 userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) return next();
+  // Skip if unchanged, or already hashed (from an approved access request)
+  if (!this.isModified('password') || isHash(this.password)) return next();
   this.password = await bcrypt.hash(this.password, 10);
   next();
 });
