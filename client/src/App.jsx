@@ -8,6 +8,8 @@ import NotFoundPage from './pages/NotFoundPage';
 import PlansPage from './features/plans/PlansPage';
 import CustomersPage from './features/customers/CustomersPage';
 import CustomerDetailsPage from './features/customers/CustomerDetailsPage';
+import SubscriptionsPage from './features/subscriptions/SubscriptionsPage';
+import SubscriptionDetailsPage from './features/subscriptions/SubscriptionDetailsPage';
 
 export default function App() {
   return (
@@ -21,7 +23,8 @@ export default function App() {
           <Route path="customers" element={<CustomersPage />} />
           <Route path="customers/:id" element={<CustomerDetailsPage />} />
           <Route path="plans" element={<PlansPage />} />
-          <Route path="subscriptions" element={<PlaceholderPage title="Subscriptions" />} />
+          <Route path="subscriptions" element={<SubscriptionsPage />} />
+          <Route path="subscriptions/:id" element={<SubscriptionDetailsPage />} />
           <Route path="tickets" element={<PlaceholderPage title="Trouble Tickets" />} />
           <Route element={<RequireAdmin />}>
             <Route path="staff" element={<PlaceholderPage title="Access Control" />} />

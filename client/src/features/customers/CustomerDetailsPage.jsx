@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Pencil, Trash2 } from 'lucide-react';
+import { ArrowLeft, Pencil, Plus, Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { deleteCustomer, getCustomer } from '../../api/customers';
 import { readError } from '../../api/client';
@@ -12,6 +12,7 @@ import Badge from '../../components/ui/Badge';
 import DataTable from '../../components/ui/DataTable';
 import ConfirmDialog from '../../components/ui/ConfirmDialog';
 import CustomerDrawer from './CustomerDrawer';
+import SubscriptionDrawer from '../subscriptions/SubscriptionDrawer';
 
 function Detail({ label, children, mono }) {
   return (
@@ -29,6 +30,7 @@ export default function CustomerDetailsPage() {
   const [customer, setCustomer] = useState(null);
   const [error, setError] = useState('');
   const [editing, setEditing] = useState(null);
+  const [ordering, setOrdering] = useState(null);
   const [confirming, setConfirming] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState('');
@@ -132,10 +134,16 @@ export default function CustomerDetailsPage() {
       </div>
 
       <section className="flex flex-col gap-3">
-        <h2 className="font-bold">Subscriptions ({customer.subscriptions.length})</h2>
+        <div className="flex items-center justify-between gap-4">
+          <h2 className="font-bold">Subscriptions ({customer.subscriptions.length})</h2>
+          <button className="btn-ghost border border-line" onClick={() => setOrdering({ customerId: customer._id })}>
+            <Plus size={16} /> New subscription
+          </button>
+        </div>
         <DataTable
           columns={subColumns}
           rows={customer.subscriptions}
+          onRowClick={(s) => navigate(`/subscriptions/${s._id}`)}
           empty={{ title: 'No subscriptions yet', message: 'This customer has no broadband connections.' }}
         />
       </section>
@@ -144,6 +152,12 @@ export default function CustomerDetailsPage() {
         customer={editing}
         onClose={() => setEditing(null)}
         onSaved={() => { setEditing(null); load(); }}
+      />
+
+      <SubscriptionDrawer
+        open={ordering}
+        onClose={() => setOrdering(null)}
+        onSaved={(saved) => navigate(`/subscriptions/${saved._id}`)}
       />
 
       <ConfirmDialog

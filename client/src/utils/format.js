@@ -11,3 +11,5 @@ export const shortDate = (d) =>
 
 export const dateTime = (d) =>
   d ? new Date(d).toLocaleString('en-GB', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }) : '—';
+
+export const place = (a) => (a.city === a.district ? a.city : `${a.city}, ${a.district}`);

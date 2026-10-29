@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import Subscription, { ALLOWED_CHANGES } from '../models/Subscription.js';
 import Customer from '../models/Customer.js';
 import Plan from '../models/Plan.js';
@@ -49,12 +50,16 @@ export const listSubscriptions = asyncHandler(async (req, res) => {
     );
     filter.$or = [{ accountNo: rx }, { routerSerial: rx }, { customer: { $in: customers.map((c) => c._id) } }];
   }
-  if (status) filter.status = status;
-  if (plan) filter.plan = plan;
+  if (plan && mongoose.isValidObjectId(plan)) filter.plan = new mongoose.Types.ObjectId(plan);
   if (district) filter['installAddress.district'] = district;
 
+  // Counts for the status tabs (ignores the status filter)
+  const grouped = await Subscription.aggregate([{ $match: filter }, { $group: { _id: '$status', total: { $sum: 1 } } }]);
+  const counts = Object.fromEntries(grouped.map((g) => [g._id, g.total]));
+
+  if (status) filter.status = status;
   const subscriptions = await withDetails(Subscription.find(filter)).sort(SORTS[sort] || SORTS.newest);
-  res.json({ count: subscriptions.length, subscriptions });
+  res.json({ count: subscriptions.length, counts, subscriptions });
 });
 
 // GET /api/subscriptions/:id
