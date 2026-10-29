@@ -8,6 +8,7 @@ import subscriptionRoutes from './routes/subscriptionRoutes.js';
 import ticketRoutes from './routes/ticketRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
+import dashboardRoutes from './routes/dashboardRoutes.js';
 import { protect } from './middleware/auth.js';
 
 const app = express();
@@ -32,6 +33,7 @@ app.use('/api/customers', protect, customerRoutes);
 app.use('/api/subscriptions', protect, subscriptionRoutes);
 app.use('/api/tickets', protect, ticketRoutes);
 app.use('/api/users', protect, userRoutes);
+app.use('/api/dashboard', protect, dashboardRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
