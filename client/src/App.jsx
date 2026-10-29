@@ -6,6 +6,8 @@ import DashboardPage from './pages/DashboardPage';
 import PlaceholderPage from './pages/PlaceholderPage';
 import NotFoundPage from './pages/NotFoundPage';
 import PlansPage from './features/plans/PlansPage';
+import CustomersPage from './features/customers/CustomersPage';
+import CustomerDetailsPage from './features/customers/CustomerDetailsPage';
 
 export default function App() {
   return (
@@ -16,7 +18,8 @@ export default function App() {
       <Route element={<RequireAuth />}>
         <Route element={<AppLayout />}>
           <Route index element={<DashboardPage />} />
-          <Route path="customers" element={<PlaceholderPage title="Customer Accounts" />} />
+          <Route path="customers" element={<CustomersPage />} />
+          <Route path="customers/:id" element={<CustomerDetailsPage />} />
           <Route path="plans" element={<PlansPage />} />
           <Route path="subscriptions" element={<PlaceholderPage title="Subscriptions" />} />
           <Route path="tickets" element={<PlaceholderPage title="Trouble Tickets" />} />

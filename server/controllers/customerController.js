@@ -35,14 +35,24 @@ export const listCustomers = asyncHandler(async (req, res) => {
   if (type) filter.customerType = type;
 
   const customers = await Customer.find(filter).sort(SORTS[sort] || SORTS.newest);
-  res.json({ count: customers.length, customers });
+
+  // Subscription count per customer
+  const counts = await Subscription.aggregate([{ $group: { _id: '$customer', total: { $sum: 1 } } }]);
+  const byCustomer = Object.fromEntries(counts.map((c) => [String(c._id), c.total]));
+  const rows = customers.map((c) => ({ ...c.toJSON(), subscriptionCount: byCustomer[String(c._id)] || 0 }));
+
+  res.json({ count: rows.length, customers: rows });
 });
 
 // GET /api/customers/:id
 export const getCustomer = asyncHandler(async (req, res) => {
   const customer = await Customer.findById(req.params.id);
   if (!customer) throw new ApiError(404, 'Customer not found');
-  res.json(customer);
+
+  const subscriptions = await Subscription.find({ customer: customer._id })
+    .populate('plan', 'name technology downMbps upMbps monthlyFeeLKR')
+    .sort({ createdAt: -1 });
+  res.json({ ...customer.toJSON(), subscriptions });
 });
 
 // POST /api/customers
