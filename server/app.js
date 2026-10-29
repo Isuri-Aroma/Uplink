@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import { notFound, errorHandler } from './middleware/errorHandler.js';
+import planRoutes from './routes/planRoutes.js';
 
 const app = express();
 
@@ -18,7 +19,8 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Feature routes are mounted here as they are built
+// Feature routes
+app.use('/api/plans', planRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
