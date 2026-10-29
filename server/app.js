@@ -1,0 +1,26 @@
+import express from 'express';
+import cors from 'cors';
+import mongoose from 'mongoose';
+import { notFound, errorHandler } from './middleware/errorHandler.js';
+
+const app = express();
+
+app.use(cors({ origin: process.env.CLIENT_URL || 'http://localhost:5173' }));
+app.use(express.json());
+
+// Quick check that the API and database are up
+app.get('/api/health', (req, res) => {
+  res.json({
+    service: 'Uplink API',
+    status: 'ok',
+    database: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
+    time: new Date().toISOString(),
+  });
+});
+
+// Feature routes are mounted here as they are built
+
+app.use(notFound);
+app.use(errorHandler);
+
+export default app;

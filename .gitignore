@@ -1,0 +1,24 @@
+# Dependencies
+node_modules/
+
+# Environment secrets
+.env
+.env.local
+
+# Build output
+dist/
+
+# OS / editor
+.DS_Store
+.vscode/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Private assistant notes (never commit)
+CLAUDE.md
+
+# Personal files not part of the submission
+notes.txt
+*.pdf
