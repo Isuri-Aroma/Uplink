@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Pencil, Plus, Trash2 } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { CUSTOMER_TYPES, deleteCustomer, DISTRICTS, listCustomers } from '../../api/customers';
 import { readError } from '../../api/client';
@@ -9,16 +9,19 @@ import useDebounce from '../../hooks/useDebounce';
 import PageHeader from '../../components/ui/PageHeader';
 import SearchInput from '../../components/ui/SearchInput';
 import SelectFilter from '../../components/ui/SelectFilter';
-import DataTable from '../../components/ui/DataTable';
-import Badge from '../../components/ui/Badge';
+import EmptyState from '../../components/ui/EmptyState';
 import ConfirmDialog from '../../components/ui/ConfirmDialog';
 import CustomerDrawer from './CustomerDrawer';
+import CustomerDirectory, { surname } from './CustomerDirectory';
 
 const SORT_OPTIONS = [
+  { value: 'name', label: 'Surname A–Z' },
   { value: 'newest', label: 'Newest first' },
   { value: 'oldest', label: 'Oldest first' },
-  { value: 'name', label: 'Name A–Z' },
 ];
+
+// Directory order: surname, then initials
+const bySurname = (a, b) => surname(a).localeCompare(surname(b)) || a.nameWithInitials.localeCompare(b.nameWithInitials);
 
 export default function CustomersPage() {
   const { isAdmin } = useAuth();
@@ -28,7 +31,7 @@ export default function CustomersPage() {
   const [search, setSearch] = useState('');
   const [district, setDistrict] = useState('');
   const [type, setType] = useState('');
-  const [sort, setSort] = useState('newest');
+  const [sort, setSort] = useState('name');
   const debouncedSearch = useDebounce(search);
 
   const [editing, setEditing] = useState(null);
@@ -40,7 +43,7 @@ export default function CustomersPage() {
     setLoading(true);
     try {
       const data = await listCustomers({ search: debouncedSearch, district, type, sort });
-      setCustomers(data.customers);
+      setCustomers(sort === 'name' ? [...data.customers].sort(bySurname) : data.customers);
     } catch (err) {
       toast.error(readError(err).message);
     } finally {
@@ -67,58 +70,6 @@ export default function CustomersPage() {
     }
   };
 
-  const columns = [
-    {
-      key: 'name',
-      header: 'Customer',
-      render: (c) => (
-        <div>
-          <p className="font-bold">{c.nameWithInitials}</p>
-          <p className="hidden max-w-xs truncate text-xs text-muted md:block">{c.fullName}</p>
-        </div>
-      ),
-    },
-    { key: 'nic', header: 'NIC', render: (c) => <span className="font-mono text-xs">{c.nic}</span> },
-    { key: 'mobile', header: 'Mobile', render: (c) => <span className="font-mono text-xs">{c.mobile}</span> },
-    {
-      key: 'location',
-      header: 'Location',
-      render: (c) => (
-        <div>
-          <p>{c.address.city}</p>
-          <p className="hidden text-xs text-muted md:block">{c.address.district} District</p>
-        </div>
-      ),
-    },
-    {
-      key: 'type',
-      header: 'Type',
-      render: (c) => <Badge tone={c.customerType === 'Business' ? 'accent' : 'primary'}>{c.customerType}</Badge>,
-    },
-    { key: 'subs', header: 'Subscriptions', align: 'right', render: (c) => <span className="tabular-nums">{c.subscriptionCount}</span> },
-    {
-      key: 'actions',
-      header: <span className="sr-only">Actions</span>,
-      align: 'right',
-      render: (c) => (
-        <div className="flex justify-end gap-1" onClick={(e) => e.stopPropagation()}>
-          <button className="rounded-lg p-2 text-muted hover:bg-primary-soft hover:text-primary" onClick={() => setEditing(c)} aria-label={`Edit ${c.nameWithInitials}`}>
-            <Pencil size={16} />
-          </button>
-          {isAdmin && (
-            <button
-              className="rounded-lg p-2 text-muted hover:bg-bad-soft hover:text-bad"
-              onClick={() => { setDeleteError(''); setToDelete(c); }}
-              aria-label={`Delete ${c.nameWithInitials}`}
-            >
-              <Trash2 size={16} />
-            </button>
-          )}
-        </div>
-      ),
-    },
-  ];
-
   const filtered = debouncedSearch || district || type;
   const business = customers.filter((c) => c.customerType === 'Business').length;
 
@@ -143,15 +94,24 @@ export default function CustomersPage() {
         <SelectFilter id="cust-sort" label="Sort" value={sort} onChange={setSort} options={SORT_OPTIONS} />
       </div>
 
-      <DataTable
-        columns={columns}
-        rows={customers}
-        loading={loading}
-        onRowClick={(c) => navigate(`/customers/${c._id}`)}
-        empty={filtered
-          ? { title: 'No customers match', message: 'Try a different search or clear the filters.' }
-          : { title: 'No customers yet', message: 'Register the first broadband customer.' }}
-      />
+      {loading ? (
+        <div className="card h-72 animate-pulse" aria-busy="true" />
+      ) : customers.length ? (
+        <CustomerDirectory
+          customers={customers}
+          grouped={sort === 'name'}
+          canDelete={isAdmin}
+          onOpen={(c) => navigate(`/customers/${c._id}`)}
+          onEdit={setEditing}
+          onDelete={(c) => { setDeleteError(''); setToDelete(c); }}
+        />
+      ) : (
+        <EmptyState
+          {...(filtered
+            ? { title: 'No customers match', message: 'Try a different search or clear the filters.' }
+            : { title: 'No customers yet', message: 'Register the first broadband customer.' })}
+        />
+      )}
 
       <CustomerDrawer
         customer={editing}

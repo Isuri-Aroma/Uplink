@@ -36,10 +36,16 @@ export const listCustomers = asyncHandler(async (req, res) => {
 
   const customers = await Customer.find(filter).sort(SORTS[sort] || SORTS.newest);
 
-  // Subscription count per customer
-  const counts = await Subscription.aggregate([{ $group: { _id: '$customer', total: { $sum: 1 } } }]);
-  const byCustomer = Object.fromEntries(counts.map((c) => [String(c._id), c.total]));
-  const rows = customers.map((c) => ({ ...c.toJSON(), subscriptionCount: byCustomer[String(c._id)] || 0 }));
+  // Account numbers per customer
+  const subs = await Subscription.aggregate([
+    { $sort: { createdAt: 1 } },
+    { $group: { _id: '$customer', accounts: { $push: { accountNo: '$accountNo', status: '$status' } } } },
+  ]);
+  const byCustomer = Object.fromEntries(subs.map((s) => [String(s._id), s.accounts]));
+  const rows = customers.map((c) => {
+    const accounts = byCustomer[String(c._id)] || [];
+    return { ...c.toJSON(), accounts, subscriptionCount: accounts.length };
+  });
 
   res.json({ count: rows.length, customers: rows });
 });

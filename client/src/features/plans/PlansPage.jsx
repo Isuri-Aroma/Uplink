@@ -1,21 +1,18 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Loader2, Pencil, Plus, Trash2 } from 'lucide-react';
+import { Loader2, Plus } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { createPlan, deletePlan, listPlans, TECHNOLOGIES, updatePlan } from '../../api/plans';
 import { readError } from '../../api/client';
 import { useAuth } from '../../context/AuthContext';
 import useDebounce from '../../hooks/useDebounce';
-import { dataCap, lkr, speed } from '../../utils/format';
 import PageHeader from '../../components/ui/PageHeader';
 import SearchInput from '../../components/ui/SearchInput';
 import SelectFilter from '../../components/ui/SelectFilter';
-import DataTable from '../../components/ui/DataTable';
-import Badge from '../../components/ui/Badge';
+import EmptyState from '../../components/ui/EmptyState';
 import Drawer from '../../components/ui/Drawer';
 import ConfirmDialog from '../../components/ui/ConfirmDialog';
 import PlanForm from './PlanForm';
-
-const TECH_TONE = { Fibre: 'primary', VDSL: 'off', '4G LTE': 'accent', '5G': 'accent' };
+import PlanCard from './PlanCard';
 
 const SORT_OPTIONS = [
   { value: 'newest', label: 'Newest first' },
@@ -100,50 +97,10 @@ export default function PlansPage() {
     }
   };
 
-  const columns = [
-    {
-      key: 'name',
-      header: 'Plan',
-      render: (p) => (
-        <div>
-          <p className="font-bold">{p.name}</p>
-          {p.description && <p className="hidden max-w-xs truncate text-xs text-muted md:block">{p.description}</p>}
-        </div>
-      ),
-    },
-    { key: 'technology', header: 'Technology', render: (p) => <Badge tone={TECH_TONE[p.technology]}>{p.technology}</Badge> },
-    { key: 'speed', header: 'Speed', render: (p) => <span className="font-mono text-xs">{speed(p.downMbps, p.upMbps)}</span> },
-    { key: 'data', header: 'Data', render: (p) => dataCap(p.dataCapGB) },
-    { key: 'fee', header: 'Monthly fee', align: 'right', render: (p) => <span className="font-semibold tabular-nums">{lkr(p.monthlyFeeLKR)}</span> },
-    { key: 'subs', header: 'Subscribers', align: 'right', render: (p) => <span className="tabular-nums">{p.subscriberCount}</span> },
-    {
-      key: 'status',
-      header: 'Status',
-      render: (p) => <Badge tone={p.isActive ? 'ok' : 'off'} dot>{p.isActive ? 'On sale' : 'Inactive'}</Badge>,
-    },
-  ];
-
-  if (isAdmin) {
-    columns.push({
-      key: 'actions',
-      header: <span className="sr-only">Actions</span>,
-      align: 'right',
-      render: (p) => (
-        <div className="flex justify-end gap-1" onClick={(e) => e.stopPropagation()}>
-          <button className="rounded-lg p-2 text-muted hover:bg-primary-soft hover:text-primary" onClick={() => openForm(p)} aria-label={`Edit ${p.name}`}>
-            <Pencil size={16} />
-          </button>
-          <button
-            className="rounded-lg p-2 text-muted hover:bg-bad-soft hover:text-bad"
-            onClick={() => { setDeleteError(''); setToDelete(p); }}
-            aria-label={`Delete ${p.name}`}
-          >
-            <Trash2 size={16} />
-          </button>
-        </div>
-      ),
-    });
-  }
+  const askDelete = (p) => {
+    setDeleteError('');
+    setToDelete(p);
+  };
 
   const onSale = plans.filter((p) => p.isActive).length;
   const filtered = debouncedSearch || technology || status;
@@ -169,15 +126,23 @@ export default function PlansPage() {
         <SelectFilter id="plan-sort" label="Sort" value={sort} onChange={setSort} options={SORT_OPTIONS} />
       </div>
 
-      <DataTable
-        columns={columns}
-        rows={plans}
-        loading={loading}
-        onRowClick={openForm}
-        empty={filtered
-          ? { title: 'No plans match', message: 'Try a different search or clear the filters.' }
-          : { title: 'No plans yet', message: 'Add the first broadband plan to start selling subscriptions.' }}
-      />
+      {loading ? (
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3" aria-busy="true">
+          {[1, 2, 3].map((i) => <div key={i} className="card h-60 animate-pulse" />)}
+        </div>
+      ) : plans.length ? (
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          {plans.map((p) => (
+            <PlanCard key={p._id} plan={p} canEdit={isAdmin} onOpen={openForm} onEdit={openForm} onDelete={askDelete} />
+          ))}
+        </div>
+      ) : (
+        <EmptyState
+          {...(filtered
+            ? { title: 'No plans match', message: 'Try a different search or clear the filters.' }
+            : { title: 'No plans yet', message: 'Add the first broadband plan to start selling subscriptions.' })}
+        />
+      )}
 
       <Drawer
         open={!!editing}
