@@ -1,11 +1,12 @@
 import { LogOut, Menu } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import ThemeToggle from '../ThemeToggle';
+import Logo from '../Logo';
 
 const initials = (name = '') =>
   name.split(' ').filter(Boolean).slice(0, 2).map((w) => w[0]).join('').toUpperCase();
 
-export default function Topbar({ title, onMenu }) {
+export default function Topbar({ onMenu }) {
   const { user, signOut } = useAuth();
 
   return (
@@ -13,7 +14,7 @@ export default function Topbar({ title, onMenu }) {
       <button className="rounded-lg p-2 text-muted hover:bg-primary-soft lg:hidden" onClick={onMenu} aria-label="Open menu">
         <Menu size={20} />
       </button>
-      <h1 className="truncate text-lg font-bold">{title}</h1>
+      <Logo className="lg:hidden" />
 
       <div className="ml-auto flex items-center gap-2">
         <ThemeToggle />

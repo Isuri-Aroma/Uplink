@@ -5,6 +5,7 @@ import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 import PlaceholderPage from './pages/PlaceholderPage';
 import NotFoundPage from './pages/NotFoundPage';
+import PlansPage from './features/plans/PlansPage';
 
 export default function App() {
   return (
@@ -16,7 +17,7 @@ export default function App() {
         <Route element={<AppLayout />}>
           <Route index element={<DashboardPage />} />
           <Route path="customers" element={<PlaceholderPage title="Customer Accounts" />} />
-          <Route path="plans" element={<PlaceholderPage title="Product Catalogue" />} />
+          <Route path="plans" element={<PlansPage />} />
           <Route path="subscriptions" element={<PlaceholderPage title="Subscriptions" />} />
           <Route path="tickets" element={<PlaceholderPage title="Trouble Tickets" />} />
           <Route element={<RequireAdmin />}>

@@ -47,7 +47,7 @@
 /* Shared UI classes */
 @layer components {
   .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold
+    @apply inline-flex h-10 items-center justify-center gap-2 rounded-lg px-4 text-sm font-semibold
       transition-colors disabled:cursor-not-allowed disabled:opacity-60;
   }
   .btn-primary { @apply btn bg-primary text-primary-ink hover:bg-primary/90; }
@@ -55,9 +55,10 @@
   .btn-danger { @apply btn bg-bad text-white hover:bg-bad/90 dark:text-bg; }
   .label { @apply mb-1.5 block text-sm font-semibold text-ink; }
   .input {
-    @apply w-full rounded-lg border border-line bg-surface px-3.5 py-2.5 text-sm text-ink
+    @apply h-10 w-full rounded-lg border border-line bg-surface px-3.5 text-sm text-ink
       placeholder:text-muted/70 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/25;
   }
+  textarea.input { @apply h-auto py-2.5; }
   .input-error { @apply border-bad focus:border-bad focus:ring-bad/25; }
   .field-error { @apply mt-1.5 text-xs font-medium text-bad; }
   .card { @apply rounded-xl border border-line bg-surface; }

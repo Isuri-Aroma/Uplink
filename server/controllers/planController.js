@@ -23,7 +23,13 @@ export const listPlans = asyncHandler(async (req, res) => {
   if (status === 'active') filter.isActive = true;
   if (status === 'inactive') filter.isActive = false;
 
-  const plans = await Plan.find(filter).sort(SORTS[sort] || SORTS.newest);
+  const plans = await Plan.find(filter).sort(SORTS[sort] || SORTS.newest).lean();
+
+  // Subscriber count per plan
+  const counts = await Subscription.aggregate([{ $group: { _id: '$plan', total: { $sum: 1 } } }]);
+  const byPlan = Object.fromEntries(counts.map((c) => [String(c._id), c.total]));
+  plans.forEach((p) => (p.subscriberCount = byPlan[String(p._id)] || 0));
+
   res.json({ count: plans.length, plans });
 });
 

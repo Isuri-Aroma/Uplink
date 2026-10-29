@@ -141,7 +141,7 @@ export default function LoginPage() {
               {errors.password && <p id="password-error" className="field-error">{errors.password}</p>}
             </div>
 
-            <button type="submit" className="btn-primary mt-1 w-full py-3" disabled={busy}>
+            <button type="submit" className="btn-primary mt-1 h-11 w-full" disabled={busy}>
               {busy && <Loader2 size={16} className="animate-spin" />}
               {busy ? 'Signing in…' : 'Sign in'}
             </button>
