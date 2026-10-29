@@ -9,7 +9,7 @@ export const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email: email.toLowerCase() }).select('+password');
 
-  // No account yet: tell them about their request, only if the password matches it
+  // Explain a pending or rejected request
   if (!user) {
     const request = await AccessRequest.findOne({ email: email.toLowerCase() }).sort({ createdAt: -1 }).select('+password');
     if (request && request.status !== 'Approved' && (await request.checkPassword(password))) {
@@ -22,7 +22,7 @@ export const login = asyncHandler(async (req, res) => {
     }
   }
 
-  // Same message for wrong email or wrong password, so nobody can guess staff emails
+  // Same message for wrong email or password
   if (!user || !(await user.checkPassword(password))) {
     throw new ApiError(401, 'Email or password is incorrect');
   }
@@ -40,7 +40,7 @@ export const me = asyncHandler(async (req, res) => {
   res.json(req.user);
 });
 
-// GET /api/auth/staff  (active staff for "assign to" lists)
+// GET /api/auth/staff
 export const staffList = asyncHandler(async (req, res) => {
   const staff = await User.find({ isActive: true }, 'name role').sort({ name: 1 });
   res.json(staff);

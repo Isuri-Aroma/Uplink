@@ -1,5 +1,4 @@
-// Fills the database with demo data for development and the project demo.
-// Run with: npm run seed   (this deletes existing Uplink data first)
+// Demo data: npm run seed (clears the database first)
 import 'dotenv/config';
 import mongoose from 'mongoose';
 import { connectDB } from '../config/db.js';
@@ -38,7 +37,7 @@ const plans = [
   { name: 'ADSL Classic 8', technology: 'VDSL', downMbps: 8, upMbps: 1, dataCapGB: 60, monthlyFeeLKR: 1490, description: 'Legacy plan, no longer sold', isActive: false },
 ];
 
-// [name with initials, full name, NIC, mobile, address line, city, district, type]
+// [initials name, full name, NIC, mobile, street, city, district, type]
 const customers = [
   ['W. M. S. Bandara', 'Wijesinghe Mudiyanselage Sanath Bandara', '881542367V', '0771234567', 'No. 45, Temple Road', 'Kurunegala', 'Kurunegala'],
   ['K. A. D. Perera', 'Kankanamge Anusha Dilrukshi Perera', '199571203456', '0712345678', '12/3, Galle Road', 'Moratuwa', 'Colombo'],
@@ -57,7 +56,7 @@ const customers = [
   ['U. G. N. Dissanayake', 'Udugama Gedara Nimal Dissanayake', '650230987V', '0754321098', '3, Hill Street', 'Nuwara Eliya', 'Nuwara Eliya'],
 ];
 
-// [customer #, plan, ordered days ago, events after order: [status, days after order, note], router, GB used]
+// [customer, plan, days ago, events, router, GB used]
 const subscriptions = [
   [0, 'Fibre 100', 210, [['Active', 4, 'Installed by technician']], 'HW-HG8145V5-0012AB', 312.4],
   [1, 'Fibre 300', 180, [['Active', 3, 'Installed by technician']], 'HW-HG8145V5-0019F2', 655.0],
@@ -81,7 +80,7 @@ const subscriptions = [
   [9, 'Fibre 100', 1, [], null, 0],
 ];
 
-// [subscription #, category, priority, subject, description, days ago opened, assignee #, events: [status, hours after open, note]]
+// [subscription, category, priority, subject, description, days ago, assignee, events]
 const tickets = [
   [0, 'No Connection', 'Critical', 'Red LOS light on ONT', 'Customer reports red LOS light on the router since morning, no internet at all.', 0.2, 1, []],
   [1, 'Slow Speed', 'High', 'Getting 40 Mbps on 300 plan', 'Speed tests at night show around 40 Mbps on a 300 Mbps plan, both Wi-Fi and cable.', 1, 2, [['In Progress', 3, 'Checking OLT port utilisation']]],
@@ -102,7 +101,7 @@ async function seed() {
   console.log('Clearing old data...');
   await Promise.all([User, Plan, Customer, Subscription, Ticket, Counter, AccessRequest].map((m) => m.deleteMany({})));
 
-  // Staff are saved one by one so their passwords get hashed
+  // One by one so passwords get hashed
   const users = [];
   for (const s of staff) users.push(await User.create(s));
   const admin = users[0];

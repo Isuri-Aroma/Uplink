@@ -3,7 +3,7 @@ import { DISTRICTS } from '../utils/districts.js';
 
 export const STATUSES = ['Pending', 'Active', 'Suspended', 'Terminated'];
 
-// Which status changes are allowed. Terminated is final.
+// Allowed status changes
 export const ALLOWED_CHANGES = {
   Pending: ['Active', 'Terminated'],
   Active: ['Suspended', 'Terminated'],
@@ -21,7 +21,7 @@ const historySchema = new mongoose.Schema(
   { _id: false }
 );
 
-// A customer's broadband service on a plan. This is the main record in Uplink.
+// A customer's broadband service
 const subscriptionSchema = new mongoose.Schema(
   {
     accountNo: { type: String, required: true, unique: true }, // SUB-000123

@@ -1,8 +1,4 @@
-// Sri Lankan NIC helper.
-// Old format: YY DDD SSS C + V/X   e.g. 901234567V
-// New format: YYYY DDD SSSS C      e.g. 199012304567 (since 2016)
-// DDD is the day of the birth year (1-366); women get +500 (501-866).
-// The NIC calendar always counts February as 29 days.
+// Sri Lankan NIC: old 901234567V, new 199012304567 (day +500 = female)
 
 const OLD = /^(\d{2})(\d{3})(\d{3})(\d)[VX]$/;
 const NEW = /^(\d{4})(\d{3})(\d{4})(\d)$/;
@@ -28,7 +24,7 @@ export function parseNic(input) {
   if (day > 500) day -= 500;
   if (day < 1 || day > 366) return null;
 
-  // Use a leap year to turn the day number into a month and date
+  // NIC days count Feb as 29
   const ref = new Date(Date.UTC(2000, 0, day));
   const dateOfBirth = new Date(Date.UTC(year, ref.getUTCMonth(), ref.getUTCDate()));
 

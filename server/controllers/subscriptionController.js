@@ -15,7 +15,7 @@ const SORTS = {
   installed: { installDate: -1 },
 };
 
-// Fields shown when a subscription is listed with its customer and plan
+// Add customer and plan details
 const withDetails = (query) =>
   query
     .populate('customer', 'nameWithInitials fullName nic mobile email address customerType')
@@ -29,15 +29,13 @@ async function findActivePlan(id) {
   return plan;
 }
 
-// Only these fields can be changed through the edit form.
-// Status has its own endpoint so every change is recorded in the history.
+// Editable fields (status has its own route)
 const pickEditable = ({ installAddress, routerSerial, installDate, usedGB, notes }) =>
   Object.fromEntries(
     Object.entries({ installAddress, routerSerial, installDate, usedGB, notes }).filter(([, v]) => v !== undefined)
   );
 
-// GET /api/subscriptions?search=&status=&plan=&district=&sort=
-// search matches account no, router serial, or the customer's name / NIC / mobile
+// GET /api/subscriptions
 export const listSubscriptions = asyncHandler(async (req, res) => {
   const { search, status, plan, district, sort = 'newest' } = req.query;
   const filter = {};
@@ -53,7 +51,7 @@ export const listSubscriptions = asyncHandler(async (req, res) => {
   if (plan && mongoose.isValidObjectId(plan)) filter.plan = new mongoose.Types.ObjectId(plan);
   if (district) filter['installAddress.district'] = district;
 
-  // Counts for the status tabs (ignores the status filter)
+  // Counts for the status tabs
   const grouped = await Subscription.aggregate([{ $match: filter }, { $group: { _id: '$status', total: { $sum: 1 } } }]);
   const counts = Object.fromEntries(grouped.map((g) => [g._id, g.total]));
 
@@ -69,7 +67,7 @@ export const getSubscription = asyncHandler(async (req, res) => {
   res.json(subscription);
 });
 
-// POST /api/subscriptions  (new orders always start as Pending)
+// POST /api/subscriptions
 export const createSubscription = asyncHandler(async (req, res) => {
   const customer = await Customer.findById(req.body.customer);
   if (!customer) throw new ApiError(404, 'Customer not found');
@@ -78,14 +76,14 @@ export const createSubscription = asyncHandler(async (req, res) => {
   const fields = pickEditable(req.body);
   const subscription = new Subscription({
     ...fields,
-    // Install at the customer's home unless another address is given
+    // Default to the customer's address
     installAddress: { ...customer.address.toObject(), ...fields.installAddress },
     customer: customer._id,
     plan: plan._id,
     status: 'Pending',
     statusHistory: [{ status: 'Pending', note: `New connection ordered on ${plan.name}`, by: req.user._id }],
   });
-  // Check everything except the account number first, so a failed form doesn't use up a number
+  // Validate before taking a number
   await subscription.validate({ pathsToSkip: ['accountNo'] });
   subscription.accountNo = await nextNumber('subscription', 'SUB');
   await subscription.save();
@@ -93,7 +91,7 @@ export const createSubscription = asyncHandler(async (req, res) => {
   res.status(201).json(await withDetails(Subscription.findById(subscription._id)));
 });
 
-// PUT /api/subscriptions/:id  (plan change, address, router, usage, notes)
+// PUT /api/subscriptions/:id
 export const updateSubscription = asyncHandler(async (req, res) => {
   const subscription = await Subscription.findById(req.params.id).populate('plan', 'name');
   if (!subscription) throw new ApiError(404, 'Subscription not found');
@@ -114,7 +112,7 @@ export const updateSubscription = asyncHandler(async (req, res) => {
   res.json(await withDetails(Subscription.findById(subscription._id)));
 });
 
-// PATCH /api/subscriptions/:id/status  { status, note }
+// PATCH /api/subscriptions/:id/status
 export const changeStatus = asyncHandler(async (req, res) => {
   const { status, note } = req.body;
   const subscription = await Subscription.findById(req.params.id);
@@ -139,7 +137,7 @@ export const changeStatus = asyncHandler(async (req, res) => {
 });
 
 // DELETE /api/subscriptions/:id
-// Live services must be terminated first, so only Pending or Terminated records can be removed
+// Only Pending or Terminated can be deleted
 export const deleteSubscription = asyncHandler(async (req, res) => {
   const subscription = await Subscription.findById(req.params.id);
   if (!subscription) throw new ApiError(404, 'Subscription not found');

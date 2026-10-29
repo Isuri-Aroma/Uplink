@@ -4,7 +4,7 @@ import bcrypt from 'bcryptjs';
 export const TEAMS = ['Customer Care', 'Field Operations', 'Network Operations', 'Billing', 'Sales'];
 export const REQUEST_STATUSES = ['Pending', 'Approved', 'Rejected'];
 
-// A new staff member asking for an Uplink account
+// New staff asking for an account
 const accessRequestSchema = new mongoose.Schema(
   {
     name: { type: String, required: [true, 'Name is required'], trim: true, maxlength: 60 },

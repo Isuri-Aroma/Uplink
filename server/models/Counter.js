@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-// Stores the last number used for each kind of reference (SUB-000001, TT-000001, ...)
+// Last number used for SUB- and TT- references
 const counterSchema = new mongoose.Schema({
   _id: String,
   seq: { type: Number, default: 0 },
@@ -8,7 +8,7 @@ const counterSchema = new mongoose.Schema({
 
 const Counter = mongoose.model('Counter', counterSchema);
 
-// Atomically takes the next number, so two requests can never get the same one
+// Next number, safe for parallel requests
 export async function nextNumber(name, prefix) {
   const counter = await Counter.findByIdAndUpdate(name, { $inc: { seq: 1 } }, { new: true, upsert: true });
   return `${prefix}-${String(counter.seq).padStart(6, '0')}`;

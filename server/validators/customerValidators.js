@@ -5,7 +5,7 @@ import { parseNic, ageOn } from '../utils/nic.js';
 
 export const customerIdRule = [param('id').isMongoId().withMessage('Invalid customer id')];
 
-// "W. M. S. Bandara": one or more initials, then a surname
+// e.g. "W. M. S. Bandara"
 const INITIALS = /^(?:[A-Z]\.\s?)+[A-Z][A-Za-z'-]+(?:\s[A-Z][A-Za-z'-]+)*$/;
 
 export const customerRules = (isUpdate = false) => {

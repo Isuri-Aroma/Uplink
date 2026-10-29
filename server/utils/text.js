@@ -1,2 +1,2 @@
-// Makes user input safe to use inside a RegExp (so "C++" doesn't break a search)
+// Escape text for use in a RegExp
 export const escapeRegex = (text) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');

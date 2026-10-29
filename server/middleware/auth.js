@@ -8,7 +8,7 @@ export const signToken = (user) =>
     expiresIn: process.env.JWT_EXPIRES_IN || '8h',
   });
 
-// Lets the request through only with a valid "Authorization: Bearer <token>" header
+// Needs a valid Bearer token
 export const protect = asyncHandler(async (req, res, next) => {
   const [scheme, token] = (req.headers.authorization || '').split(' ');
   if (scheme !== 'Bearer' || !token) throw new ApiError(401, 'Please sign in to continue');
@@ -20,7 +20,7 @@ export const protect = asyncHandler(async (req, res, next) => {
     throw new ApiError(401, 'Your session is invalid or has expired. Please sign in again.');
   }
 
-  // Check the account still exists and is enabled, in case an admin disabled it
+  // Account must still be active
   const user = await User.findById(payload.id);
   if (!user || !user.isActive) throw new ApiError(401, 'This account is no longer active');
 
@@ -28,7 +28,7 @@ export const protect = asyncHandler(async (req, res, next) => {
   next();
 });
 
-// Use after protect, e.g. router.delete('/:id', requireRole('admin'), ...)
+// Role check, use after protect
 export const requireRole = (...roles) => (req, res, next) => {
   if (!roles.includes(req.user.role)) {
     return next(new ApiError(403, 'You do not have permission to do this. Ask an admin.'));

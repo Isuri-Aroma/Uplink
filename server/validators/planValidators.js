@@ -3,9 +3,9 @@ import { TECHNOLOGIES } from '../models/Plan.js';
 
 export const planIdRule = [param('id').isMongoId().withMessage('Invalid plan id')];
 
-// isUpdate = true makes every field optional so a plan can be partly edited
+// isUpdate makes fields optional
 export const planRules = (isUpdate = false) => {
-  // Required on create, optional on update. Missing values get a clear "is required" message.
+  // Required on create, optional on update
   const field = (name, label) =>
     isUpdate ? body(name).optional() : body(name).exists({ values: 'null' }).withMessage(`${label} is required`).bail();
 

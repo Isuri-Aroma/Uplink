@@ -6,13 +6,13 @@ import { escapeRegex } from '../utils/text.js';
 
 const SORTS = { newest: { createdAt: -1 }, name: { name: 1 }, 'last-login': { lastLoginAt: -1 } };
 
-// The system must always keep at least one active admin
+// Keep at least one active admin
 async function ensureAnotherAdmin(user) {
   const others = await User.countDocuments({ role: 'admin', isActive: true, _id: { $ne: user._id } });
   if (others === 0) throw new ApiError(409, 'Uplink needs at least one active admin. Add another admin first.');
 }
 
-// GET /api/users?search=&role=&status=active|disabled&sort=
+// GET /api/users
 export const listUsers = asyncHandler(async (req, res) => {
   const { search, role, status, sort = 'name' } = req.query;
   const filter = {};
@@ -43,7 +43,7 @@ export const createUser = asyncHandler(async (req, res) => {
   res.status(201).json(await User.findById(user._id));
 });
 
-// PUT /api/users/:id  (a new password here works as a reset)
+// PUT /api/users/:id (also resets password)
 export const updateUser = asyncHandler(async (req, res) => {
   const user = await User.findById(req.params.id);
   if (!user) throw new ApiError(404, 'Staff member not found');
@@ -62,7 +62,7 @@ export const updateUser = asyncHandler(async (req, res) => {
   res.json(await User.findById(user._id));
 });
 
-// DELETE /api/users/:id  (their open tickets become unassigned)
+// DELETE /api/users/:id
 export const deleteUser = asyncHandler(async (req, res) => {
   const user = await User.findById(req.params.id);
   if (!user) throw new ApiError(404, 'Staff member not found');

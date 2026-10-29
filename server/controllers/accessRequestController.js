@@ -4,7 +4,7 @@ import { ApiError } from '../utils/ApiError.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { escapeRegex } from '../utils/text.js';
 
-// POST /api/access-requests  (public, from the sign-in page)
+// POST /api/access-requests (public)
 export const createRequest = asyncHandler(async (req, res) => {
   const { name, email, employeeId, team, password, reason } = req.body;
 
@@ -17,7 +17,7 @@ export const createRequest = asyncHandler(async (req, res) => {
   res.status(201).json({ message: 'Request sent. An admin will review it.' });
 });
 
-// GET /api/access-requests?status=&search=  (admin)
+// GET /api/access-requests
 export const listRequests = asyncHandler(async (req, res) => {
   const { status, search } = req.query;
   const filter = {};
@@ -41,7 +41,7 @@ async function findPending(id) {
   return request;
 }
 
-// PATCH /api/access-requests/:id/approve  { role }  (creates the staff account)
+// PATCH /api/access-requests/:id/approve
 export const approveRequest = asyncHandler(async (req, res) => {
   const request = await findPending(req.params.id);
   if (await User.exists({ email: request.email })) throw new ApiError(409, 'An account with this email already exists');
@@ -61,7 +61,7 @@ export const approveRequest = asyncHandler(async (req, res) => {
   res.json({ message: `${user.name} can now sign in as ${user.role}`, request });
 });
 
-// PATCH /api/access-requests/:id/reject  { reason }
+// PATCH /api/access-requests/:id/reject
 export const rejectRequest = asyncHandler(async (req, res) => {
   const request = await findPending(req.params.id);
   request.status = 'Rejected';
@@ -72,7 +72,7 @@ export const rejectRequest = asyncHandler(async (req, res) => {
   res.json({ message: `Request from ${request.name} rejected`, request });
 });
 
-// DELETE /api/access-requests/:id  (reviewed requests only)
+// DELETE /api/access-requests/:id
 export const deleteRequest = asyncHandler(async (req, res) => {
   const request = await AccessRequest.findById(req.params.id);
   if (!request) throw new ApiError(404, 'Request not found');

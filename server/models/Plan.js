@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 export const TECHNOLOGIES = ['Fibre', 'VDSL', '4G LTE', '5G'];
 
-// A broadband package in the product catalogue, e.g. "Fibre 100" at 100/50 Mbps
+// A broadband plan
 const planSchema = new mongoose.Schema(
   {
     name: {
@@ -28,7 +28,7 @@ const planSchema = new mongoose.Schema(
       required: [true, 'Upload speed is required'],
       min: [1, 'Upload speed must be at least 1 Mbps'],
       validate: {
-        // Broadband plans are never faster up than down
+        // Upload can't beat download
         validator: function (value) {
           return this.downMbps == null || value <= this.downMbps;
         },
@@ -52,7 +52,7 @@ const planSchema = new mongoose.Schema(
     },
     isActive: {
       type: Boolean,
-      default: true, // inactive plans stay in the catalogue but can't be sold
+      default: true, // false = not for sale
     },
   },
   { timestamps: true }

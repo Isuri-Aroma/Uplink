@@ -17,7 +17,7 @@ const app = express();
 app.use(cors({ origin: process.env.CLIENT_URL || 'http://localhost:5173' }));
 app.use(express.json());
 
-// Quick check that the API and database are up
+// Health check
 app.get('/api/health', (req, res) => {
   res.json({
     service: 'Uplink API',
@@ -27,7 +27,7 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Sign in and access requests are open. Everything else needs a valid token.
+// Open routes first, the rest need a token
 app.use('/api/auth', authRoutes);
 app.use('/api/access-requests', accessRequestRoutes);
 app.use('/api/plans', protect, planRoutes);

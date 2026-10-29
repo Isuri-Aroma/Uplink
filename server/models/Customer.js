@@ -4,7 +4,7 @@ import { parseNic } from '../utils/nic.js';
 
 export const CUSTOMER_TYPES = ['Residential', 'Business'];
 
-// A broadband subscriber (CRM record). Customers do not log in to Uplink.
+// A subscriber (no login)
 const customerSchema = new mongoose.Schema(
   {
     nameWithInitials: {
@@ -25,7 +25,7 @@ const customerSchema = new mongoose.Schema(
       uppercase: true,
       trim: true,
     },
-    // 12-digit form of the NIC, so 901234567V and 199012304567 count as the same person
+    // NIC in 12-digit form
     nicNormalized: { type: String, unique: true },
     mobile: {
       type: String,
@@ -48,7 +48,7 @@ const customerSchema = new mongoose.Schema(
   { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
 
-// Keep nicNormalized in sync whenever the NIC changes
+// Keep nicNormalized in sync
 customerSchema.pre('validate', function (next) {
   if (this.isModified('nic')) {
     const parsed = parseNic(this.nic);
@@ -58,7 +58,7 @@ customerSchema.pre('validate', function (next) {
   next();
 });
 
-// Birth date and gender are worked out from the NIC, not stored separately
+// Birth date and gender from the NIC
 customerSchema.virtual('dateOfBirth').get(function () {
   return parseNic(this.nic)?.dateOfBirth;
 });

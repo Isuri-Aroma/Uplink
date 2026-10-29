@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs';
 
 export const ROLES = ['admin', 'agent'];
 
-// A staff member who signs in to Uplink (not a broadband customer)
+// A staff member who signs in
 const userSchema = new mongoose.Schema(
   {
     name: { type: String, required: [true, 'Name is required'], trim: true, maxlength: 60 },
@@ -28,11 +28,11 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// Hash the password whenever it is set or changed
+// Hash the password
 const isHash = (v) => /^\$2[aby]\$\d{2}\$.{53}$/.test(v);
 
 userSchema.pre('save', async function (next) {
-  // Skip if unchanged, or already hashed (from an approved access request)
+  // Skip if unchanged or already hashed
   if (!this.isModified('password') || isHash(this.password)) return next();
   this.password = await bcrypt.hash(this.password, 10);
   next();

@@ -4,7 +4,7 @@ import { asyncHandler } from '../utils/asyncHandler.js';
 
 const QUEUE = ['Open', 'In Progress'];
 
-// GET /api/dashboard  (all figures in one request)
+// GET /api/dashboard
 export const getDashboard = asyncHandler(async (req, res) => {
   const yearAgo = new Date();
   yearAgo.setMonth(yearAgo.getMonth() - 11, 1);

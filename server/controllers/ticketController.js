@@ -11,7 +11,7 @@ import { escapeRegex } from '../utils/text.js';
 const SORTS = {
   newest: { createdAt: -1 },
   oldest: { createdAt: 1 },
-  priority: { priorityLevel: -1, createdAt: 1 }, // Critical first, oldest first within each level
+  priority: { priorityLevel: -1, createdAt: 1 }, // Critical first
 };
 
 const withDetails = (query) =>
@@ -32,7 +32,7 @@ const pickEditable = ({ category, priority, subject, description, contactMobile 
     Object.entries({ category, priority, subject, description, contactMobile }).filter(([, v]) => v !== undefined)
   );
 
-// Returns the staff id to assign, null to unassign, or undefined to leave unchanged
+// Staff id, null to unassign, undefined to keep
 async function resolveAssignee(value) {
   if (value === undefined) return undefined;
   if (!value) return null;
@@ -41,8 +41,7 @@ async function resolveAssignee(value) {
   return user._id;
 }
 
-// GET /api/tickets?search=&status=&priority=&category=&assignedTo=me|<id>|none&sort=
-// search matches ticket no, subject, account no, or the customer's name / NIC / mobile
+// GET /api/tickets
 export const listTickets = asyncHandler(async (req, res) => {
   const { search, status, priority, category, assignedTo, sort = 'newest' } = req.query;
   const filter = {};
@@ -65,7 +64,7 @@ export const listTickets = asyncHandler(async (req, res) => {
   else if (assignedTo === 'none') filter.assignedTo = null;
   else if (assignedTo && mongoose.isValidObjectId(assignedTo)) filter.assignedTo = new mongoose.Types.ObjectId(assignedTo);
 
-  // Counts for the view tabs (ignores the status filter)
+  // Counts for the view tabs
   const grouped = await Ticket.aggregate([{ $match: filter }, { $group: { _id: '$status', total: { $sum: 1 } } }]);
   const counts = Object.fromEntries(grouped.map((g) => [g._id, g.total]));
 
@@ -109,7 +108,7 @@ export const createTicket = asyncHandler(async (req, res) => {
   res.status(201).json(await withDetails(Ticket.findById(ticket._id)));
 });
 
-// PUT /api/tickets/:id  (details only; status has its own endpoint)
+// PUT /api/tickets/:id
 export const updateTicket = asyncHandler(async (req, res) => {
   const ticket = await Ticket.findById(req.params.id);
   if (!ticket) throw new ApiError(404, 'Ticket not found');
@@ -122,8 +121,7 @@ export const updateTicket = asyncHandler(async (req, res) => {
   res.json(await withDetails(Ticket.findById(ticket._id)));
 });
 
-// PATCH /api/tickets/:id/status  { status, note }
-// Resolving needs a note, which is saved as the resolution
+// PATCH /api/tickets/:id/status
 export const changeTicketStatus = asyncHandler(async (req, res) => {
   const { status, note } = req.body;
   const ticket = await Ticket.findById(req.params.id);
@@ -162,7 +160,7 @@ export const changeTicketStatus = asyncHandler(async (req, res) => {
   res.json(await withDetails(Ticket.findById(ticket._id)));
 });
 
-// DELETE /api/tickets/:id  (only closed tickets, so no live fault disappears)
+// DELETE /api/tickets/:id (closed only)
 export const deleteTicket = asyncHandler(async (req, res) => {
   const ticket = await Ticket.findById(req.params.id);
   if (!ticket) throw new ApiError(404, 'Ticket not found');

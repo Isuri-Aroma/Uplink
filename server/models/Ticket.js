@@ -6,7 +6,7 @@ export const CATEGORIES = [
 export const PRIORITIES = ['Low', 'Medium', 'High', 'Critical'];
 export const TICKET_STATUSES = ['Open', 'In Progress', 'Resolved', 'Closed'];
 
-// Which status changes are allowed. Resolved tickets can be reopened; Closed is final.
+// Allowed status changes
 export const TICKET_CHANGES = {
   Open: ['In Progress', 'Resolved'],
   'In Progress': ['Resolved'],
@@ -24,7 +24,7 @@ const activitySchema = new mongoose.Schema(
   { _id: false }
 );
 
-// A fault or service request raised against a subscription
+// A fault on a subscription
 const ticketSchema = new mongoose.Schema(
   {
     ticketNo: { type: String, required: true, unique: true }, // TT-000045
@@ -36,7 +36,7 @@ const ticketSchema = new mongoose.Schema(
     },
     category: { type: String, enum: CATEGORIES, required: [true, 'Category is required'] },
     priority: { type: String, enum: PRIORITIES, default: 'Medium' },
-    priorityLevel: Number, // 1-4, set automatically so the list can sort Critical first
+    priorityLevel: Number, // 1-4, for sorting
     subject: { type: String, required: [true, 'Subject is required'], trim: true, maxlength: 100 },
     description: { type: String, required: [true, 'Description is required'], trim: true, maxlength: 1000 },
     contactMobile: { type: String, match: [/^07\d{8}$/, 'Contact number must look like 07XXXXXXXX'] },
@@ -55,7 +55,7 @@ ticketSchema.pre('save', function (next) {
   next();
 });
 
-// Hours from opening to resolution, the "time to resolve" figure NOC teams track
+// Hours from open to resolved
 ticketSchema.virtual('hoursToResolve').get(function () {
   if (!this.resolvedAt || !this.createdAt) return null;
   return Math.round(((this.resolvedAt - this.createdAt) / 36e5) * 10) / 10;

@@ -1,4 +1,4 @@
-// The 25 administrative districts of Sri Lanka
+// Sri Lanka's 25 districts
 export const DISTRICTS = [
   'Ampara', 'Anuradhapura', 'Badulla', 'Batticaloa', 'Colombo', 'Galle', 'Gampaha',
   'Hambantota', 'Jaffna', 'Kalutara', 'Kandy', 'Kegalle', 'Kilinochchi', 'Kurunegala',

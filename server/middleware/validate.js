@@ -1,7 +1,7 @@
 import { validationResult } from 'express-validator';
 import { ApiError } from '../utils/ApiError.js';
 
-// Runs after the express-validator rules and stops the request if any failed
+// Stop the request if any rule failed
 export function validate(req, res, next) {
   const result = validationResult(req);
   if (result.isEmpty()) return next();
