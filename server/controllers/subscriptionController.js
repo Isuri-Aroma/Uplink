@@ -18,7 +18,8 @@ const SORTS = {
 const withDetails = (query) =>
   query
     .populate('customer', 'nameWithInitials fullName nic mobile customerType')
-    .populate('plan', 'name technology downMbps upMbps dataCapGB monthlyFeeLKR isActive');
+    .populate('plan', 'name technology downMbps upMbps dataCapGB monthlyFeeLKR isActive')
+    .populate('statusHistory.by', 'name');
 
 async function findActivePlan(id) {
   const plan = await Plan.findById(id);
@@ -77,7 +78,7 @@ export const createSubscription = asyncHandler(async (req, res) => {
     customer: customer._id,
     plan: plan._id,
     status: 'Pending',
-    statusHistory: [{ status: 'Pending', note: `New connection ordered on ${plan.name}` }],
+    statusHistory: [{ status: 'Pending', note: `New connection ordered on ${plan.name}`, by: req.user._id }],
   });
   // Check everything except the account number first, so a failed form doesn't use up a number
   await subscription.validate({ pathsToSkip: ['accountNo'] });
@@ -98,6 +99,7 @@ export const updateSubscription = asyncHandler(async (req, res) => {
     subscription.statusHistory.push({
       status: subscription.status,
       note: `Plan changed from ${subscription.plan.name} to ${newPlan.name}`,
+      by: req.user._id,
     });
     subscription.plan = newPlan._id;
   }
@@ -124,7 +126,7 @@ export const changeStatus = asyncHandler(async (req, res) => {
   }
 
   subscription.status = status;
-  subscription.statusHistory.push({ status, note });
+  subscription.statusHistory.push({ status, note, by: req.user._id });
   if (status === 'Active' && !subscription.installDate) subscription.installDate = new Date();
   await subscription.save();
 

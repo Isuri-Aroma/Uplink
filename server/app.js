@@ -6,6 +6,9 @@ import planRoutes from './routes/planRoutes.js';
 import customerRoutes from './routes/customerRoutes.js';
 import subscriptionRoutes from './routes/subscriptionRoutes.js';
 import ticketRoutes from './routes/ticketRoutes.js';
+import authRoutes from './routes/authRoutes.js';
+import userRoutes from './routes/userRoutes.js';
+import { protect } from './middleware/auth.js';
 
 const app = express();
 
@@ -22,11 +25,13 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Feature routes
-app.use('/api/plans', planRoutes);
-app.use('/api/customers', customerRoutes);
-app.use('/api/subscriptions', subscriptionRoutes);
-app.use('/api/tickets', ticketRoutes);
+// Sign in is the only open route. Everything else needs a valid token.
+app.use('/api/auth', authRoutes);
+app.use('/api/plans', protect, planRoutes);
+app.use('/api/customers', protect, customerRoutes);
+app.use('/api/subscriptions', protect, subscriptionRoutes);
+app.use('/api/tickets', protect, ticketRoutes);
+app.use('/api/users', protect, userRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

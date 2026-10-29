@@ -6,6 +6,7 @@ import {
   subscriptionIdRule, createSubscriptionRules, updateSubscriptionRules, statusRules,
 } from '../validators/subscriptionValidators.js';
 import { validate } from '../middleware/validate.js';
+import { requireRole } from '../middleware/auth.js';
 
 const router = Router();
 
@@ -16,7 +17,7 @@ router.route('/')
 router.route('/:id')
   .get(subscriptionIdRule, validate, getSubscription)
   .put(subscriptionIdRule, updateSubscriptionRules, validate, updateSubscription)
-  .delete(subscriptionIdRule, validate, deleteSubscription);
+  .delete(requireRole('admin'), subscriptionIdRule, validate, deleteSubscription);
 
 router.patch('/:id/status', subscriptionIdRule, statusRules, validate, changeStatus);
 

@@ -19,6 +19,7 @@ const activitySchema = new mongoose.Schema(
     status: { type: String, enum: TICKET_STATUSES, required: true },
     note: { type: String, trim: true, maxlength: 500 },
     at: { type: Date, default: Date.now },
+    by: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, // staff member who made the change
   },
   { _id: false }
 );
@@ -39,6 +40,7 @@ const ticketSchema = new mongoose.Schema(
     subject: { type: String, required: [true, 'Subject is required'], trim: true, maxlength: 100 },
     description: { type: String, required: [true, 'Description is required'], trim: true, maxlength: 1000 },
     contactMobile: { type: String, match: [/^07\d{8}$/, 'Contact number must look like 07XXXXXXXX'] },
+    assignedTo: { type: mongoose.Schema.Types.ObjectId, ref: 'User', index: true },
     status: { type: String, enum: TICKET_STATUSES, default: 'Open', index: true },
     activity: [activitySchema],
     resolution: { type: String, trim: true, maxlength: 500 },

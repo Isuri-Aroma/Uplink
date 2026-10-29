@@ -4,6 +4,7 @@ import {
 } from '../controllers/customerController.js';
 import { customerRules, customerIdRule } from '../validators/customerValidators.js';
 import { validate } from '../middleware/validate.js';
+import { requireRole } from '../middleware/auth.js';
 
 const router = Router();
 
@@ -14,6 +15,6 @@ router.route('/')
 router.route('/:id')
   .get(customerIdRule, validate, getCustomer)
   .put(customerIdRule, customerRules(true), validate, updateCustomer)
-  .delete(customerIdRule, validate, deleteCustomer);
+  .delete(requireRole('admin'), customerIdRule, validate, deleteCustomer);
 
 export default router;

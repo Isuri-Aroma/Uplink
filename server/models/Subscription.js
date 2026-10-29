@@ -16,6 +16,7 @@ const historySchema = new mongoose.Schema(
     status: { type: String, enum: STATUSES, required: true },
     note: { type: String, trim: true, maxlength: 200 },
     at: { type: Date, default: Date.now },
+    by: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, // staff member who made the change
   },
   { _id: false }
 );

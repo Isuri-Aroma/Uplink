@@ -1,6 +1,7 @@
 import Ticket, { TICKET_CHANGES } from '../models/Ticket.js';
 import Subscription from '../models/Subscription.js';
 import Customer from '../models/Customer.js';
+import User from '../models/User.js';
 import { nextNumber } from '../models/Counter.js';
 import { ApiError } from '../utils/ApiError.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
@@ -13,7 +14,10 @@ const SORTS = {
 };
 
 const withDetails = (query) =>
-  query.populate({
+  query
+    .populate('assignedTo', 'name role')
+    .populate('activity.by', 'name')
+    .populate({
     path: 'subscription',
     select: 'accountNo status installAddress customer plan',
     populate: [
@@ -27,10 +31,19 @@ const pickEditable = ({ category, priority, subject, description, contactMobile 
     Object.entries({ category, priority, subject, description, contactMobile }).filter(([, v]) => v !== undefined)
   );
 
-// GET /api/tickets?search=&status=&priority=&category=&sort=
+// Returns the staff id to assign, null to unassign, or undefined to leave unchanged
+async function resolveAssignee(value) {
+  if (value === undefined) return undefined;
+  if (!value) return null;
+  const user = await User.findById(value);
+  if (!user || !user.isActive) throw new ApiError(400, 'Tickets can only be assigned to active staff');
+  return user._id;
+}
+
+// GET /api/tickets?search=&status=&priority=&category=&assignedTo=me|<id>|none&sort=
 // search matches ticket no, subject, account no, or the customer's name / NIC / mobile
 export const listTickets = asyncHandler(async (req, res) => {
-  const { search, status, priority, category, sort = 'newest' } = req.query;
+  const { search, status, priority, category, assignedTo, sort = 'newest' } = req.query;
   const filter = {};
 
   if (search?.trim()) {
@@ -48,6 +61,9 @@ export const listTickets = asyncHandler(async (req, res) => {
   if (status) filter.status = status;
   if (priority) filter.priority = priority;
   if (category) filter.category = category;
+  if (assignedTo === 'me') filter.assignedTo = req.user._id;
+  else if (assignedTo === 'none') filter.assignedTo = null;
+  else if (assignedTo) filter.assignedTo = assignedTo;
 
   const tickets = await withDetails(Ticket.find(filter)).sort(SORTS[sort] || SORTS.newest);
   res.json({ count: tickets.length, tickets });
@@ -69,12 +85,14 @@ export const createTicket = asyncHandler(async (req, res) => {
   }
 
   const fields = pickEditable(req.body);
+  const assignee = await resolveAssignee(req.body.assignedTo);
   const ticket = new Ticket({
     ...fields,
+    assignedTo: assignee || undefined,
     contactMobile: fields.contactMobile || subscription.customer?.mobile, // call back the customer by default
     subscription: subscription._id,
     status: 'Open',
-    activity: [{ status: 'Open', note: 'Ticket logged' }],
+    activity: [{ status: 'Open', note: 'Ticket logged', by: req.user._id }],
   });
   await ticket.validate({ pathsToSkip: ['ticketNo'] });
   ticket.ticketNo = await nextNumber('ticket', 'TT');
@@ -90,6 +108,8 @@ export const updateTicket = asyncHandler(async (req, res) => {
   if (ticket.status === 'Closed') throw new ApiError(400, 'A closed ticket cannot be edited');
 
   ticket.set(pickEditable(req.body));
+  const assignee = await resolveAssignee(req.body.assignedTo);
+  if (assignee !== undefined) ticket.assignedTo = assignee;
   await ticket.save();
   res.json(await withDetails(Ticket.findById(ticket._id)));
 });
@@ -128,7 +148,7 @@ export const changeTicketStatus = asyncHandler(async (req, res) => {
   if (status === 'Closed') ticket.closedAt = new Date();
 
   ticket.status = status;
-  ticket.activity.push({ status, note });
+  ticket.activity.push({ status, note, by: req.user._id });
   await ticket.save();
 
   res.json(await withDetails(Ticket.findById(ticket._id)));
