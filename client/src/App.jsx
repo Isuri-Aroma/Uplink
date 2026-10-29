@@ -3,7 +3,6 @@ import { RequireAdmin, RequireAuth } from './components/ProtectedRoute';
 import AppLayout from './components/layout/AppLayout';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
-import PlaceholderPage from './pages/PlaceholderPage';
 import NotFoundPage from './pages/NotFoundPage';
 import PlansPage from './features/plans/PlansPage';
 import CustomersPage from './features/customers/CustomersPage';
@@ -12,6 +11,7 @@ import SubscriptionsPage from './features/subscriptions/SubscriptionsPage';
 import SubscriptionDetailsPage from './features/subscriptions/SubscriptionDetailsPage';
 import TicketsPage from './features/tickets/TicketsPage';
 import TicketDetailsPage from './features/tickets/TicketDetailsPage';
+import StaffPage from './features/staff/StaffPage';
 
 export default function App() {
   return (
@@ -30,7 +30,7 @@ export default function App() {
           <Route path="tickets" element={<TicketsPage />} />
           <Route path="tickets/:id" element={<TicketDetailsPage />} />
           <Route element={<RequireAdmin />}>
-            <Route path="staff" element={<PlaceholderPage title="Access Control" />} />
+            <Route path="staff" element={<StaffPage />} />
           </Route>
           <Route path="*" element={<NotFoundPage />} />
         </Route>
