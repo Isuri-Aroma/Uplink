@@ -1,4 +1,5 @@
 import Customer from '../models/Customer.js';
+import Subscription from '../models/Subscription.js';
 import { ApiError } from '../utils/ApiError.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { escapeRegex } from '../utils/text.js';
@@ -67,7 +68,11 @@ export const deleteCustomer = asyncHandler(async (req, res) => {
   const customer = await Customer.findById(req.params.id);
   if (!customer) throw new ApiError(404, 'Customer not found');
 
-  // TODO when Subscriptions exist: block delete if this customer has any
+  // Safe delete: a customer with subscriptions keeps their record
+  const count = await Subscription.countDocuments({ customer: customer._id });
+  if (count > 0) {
+    throw new ApiError(409, `${customer.nameWithInitials} has ${count} subscription(s). Delete or reassign them first.`);
+  }
   await customer.deleteOne();
   res.json({ message: `Customer ${customer.nameWithInitials} deleted` });
 });

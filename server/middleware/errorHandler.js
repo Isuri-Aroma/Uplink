@@ -1,5 +1,8 @@
 import { ApiError } from '../utils/ApiError.js';
 
+// Readable names for unique fields in duplicate errors
+const FIELD_LABELS = { nicNormalized: 'NIC', routerSerial: 'router serial', accountNo: 'account number' };
+
 // Runs when no route matched the request.
 export function notFound(req, res, next) {
   next(new ApiError(404, `Route not found: ${req.method} ${req.originalUrl}`));
@@ -24,7 +27,7 @@ export function errorHandler(err, req, res, next) {
     // Unique index clash, e.g. two customers with the same NIC
     status = 409;
     const field = Object.keys(err.keyValue || {})[0];
-    message = `A record with this ${field} already exists`;
+    message = `A record with this ${FIELD_LABELS[field] || field} already exists`;
   }
 
   if (status === 500) console.error(err);

@@ -1,4 +1,5 @@
 import Plan from '../models/Plan.js';
+import Subscription from '../models/Subscription.js';
 import { ApiError } from '../utils/ApiError.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { escapeRegex } from '../utils/text.js';
@@ -54,7 +55,11 @@ export const deletePlan = asyncHandler(async (req, res) => {
   const plan = await Plan.findById(req.params.id);
   if (!plan) throw new ApiError(404, 'Plan not found');
 
-  // TODO when Subscriptions exist: block delete if any subscription uses this plan
+  // Safe delete: a plan in use must be deactivated instead
+  const inUse = await Subscription.countDocuments({ plan: plan._id });
+  if (inUse > 0) {
+    throw new ApiError(409, `${inUse} subscription(s) use "${plan.name}". Mark the plan inactive instead.`);
+  }
   await plan.deleteOne();
   res.json({ message: `Plan "${plan.name}" deleted` });
 });
