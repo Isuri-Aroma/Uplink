@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, LifeBuoy, Pencil, Trash2 } from 'lucide-react';
+import { ArrowLeft, FileDown, LifeBuoy, Pencil, Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { ACTIONS, changeSubscriptionStatus, deleteSubscription, getSubscription } from '../../api/subscriptions';
 import { readError } from '../../api/client';
@@ -135,6 +135,9 @@ export default function SubscriptionDetailsPage() {
           {ACTIONS[sub.status].map((a) => (
             <button key={a.to} className={ACTION_BUTTON[a.tone]} onClick={() => openAction(a)}>{a.label}</button>
           ))}
+          <button className="btn-ghost border border-line" onClick={() => import('./serviceOrderPdf').then((m) => m.downloadServiceOrder(sub))}>
+            <FileDown size={16} /> Service order PDF
+          </button>
           {!terminated && (
             <button className="btn-ghost border border-line" onClick={() => setReporting({ subscriptionId: sub._id })}>
               <LifeBuoy size={16} /> Report fault

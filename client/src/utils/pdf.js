@@ -70,7 +70,7 @@ export function signatures(pdf, left, right) {
   doc.setDrawColor(...INK).setLineWidth(0.3);
   [[left, LEFT], [right, LEFT + WIDTH / 2 + 6]].forEach(([label, x]) => {
     doc.line(x, y, x + WIDTH / 2 - 6, y);
-    doc.setTextColor(...MUTED).setFontSize(8).text(`${label}  ·  Name  ·  Date`, x, y + 5);
+    doc.setTextColor(...MUTED).setFont('helvetica', 'normal').setFontSize(8).text(`${label}  ·  Name  ·  Date`, x, y + 5);
   });
   pdf.y = y + 12;
 }
@@ -78,7 +78,7 @@ export function signatures(pdf, left, right) {
 export function savePdf(pdf, filename, footer) {
   const { doc } = pdf;
   doc.setDrawColor(...LINE).line(LEFT, 285, LEFT + WIDTH, 285);
-  doc.setTextColor(...MUTED).setFontSize(7.5).text(footer, LEFT, 290);
+  doc.setTextColor(...MUTED).setFont('helvetica', 'normal').setFontSize(7.5).text(footer, LEFT, 290);
   doc.text('Uplink broadband management system', LEFT + WIDTH, 290, { align: 'right' });
   doc.save(filename);
 }

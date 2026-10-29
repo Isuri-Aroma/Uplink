@@ -18,7 +18,7 @@ const SORTS = {
 // Fields shown when a subscription is listed with its customer and plan
 const withDetails = (query) =>
   query
-    .populate('customer', 'nameWithInitials fullName nic mobile customerType')
+    .populate('customer', 'nameWithInitials fullName nic mobile email address customerType')
     .populate('plan', 'name technology downMbps upMbps dataCapGB monthlyFeeLKR isActive')
     .populate('statusHistory.by', 'name');
 
