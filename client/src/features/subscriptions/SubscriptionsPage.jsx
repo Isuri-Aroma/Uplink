@@ -25,7 +25,7 @@ const SORT_OPTIONS = [
   { value: 'installed', label: 'Recently installed' },
 ];
 
-const TAB_TONE = { '': 'bg-primary-soft text-primary', Pending: 'bg-warn-soft text-warn', Active: 'bg-ok-soft text-ok', Suspended: 'bg-bad-soft text-bad', Terminated: 'bg-off-soft text-off' };
+const TAB_TONE = { '': 'badge--primary', Pending: 'badge--warn', Active: 'badge--ok', Suspended: 'badge--bad', Terminated: 'badge--off' };
 
 export default function SubscriptionsPage() {
   const navigate = useNavigate();
@@ -77,19 +77,17 @@ export default function SubscriptionsPage() {
         }
       />
 
-      <div className="flex gap-2 overflow-x-auto pb-1" role="tablist" aria-label="Filter by status">
+      <div className="status-tabs" role="tablist" aria-label="Filter by status">
         {tabs.map(([value, label, count]) => (
           <button
             key={label}
             role="tab"
             aria-selected={status === value}
             onClick={() => setStatus(value)}
-            className={`flex h-10 shrink-0 items-center gap-2 rounded-lg border bg-surface px-4 text-sm font-bold transition-colors ${
-              status === value ? 'border-primary text-ink shadow-[inset_0_-3px_0_rgb(var(--primary))]' : 'border-line text-muted hover:text-ink'
-            }`}
+            className="status-tab"
           >
             {label}
-            <span className={`rounded-full px-2 font-mono text-xs ${TAB_TONE[value]}`}>{count}</span>
+            <span className={`status-tab__count ${TAB_TONE[value]}`}>{count}</span>
           </button>
         ))}
       </div>
@@ -104,7 +102,7 @@ export default function SubscriptionsPage() {
       </div>
 
       {loading ? (
-        <div className="card h-72 animate-pulse" aria-busy="true" />
+        <div className="skeleton h-72" aria-busy="true" />
       ) : rows.length ? (
         <ul className="card divide-y divide-line overflow-hidden">
           {rows.map((s) => (

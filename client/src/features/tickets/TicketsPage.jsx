@@ -71,19 +71,17 @@ export default function TicketsPage() {
         }
       />
 
-      <div className="flex w-full gap-1 overflow-x-auto rounded-lg border border-line bg-surface p-1 sm:w-fit" role="tablist" aria-label="Ticket view">
+      <div className="segmented" role="tablist" aria-label="Ticket view">
         {views.map(([value, label, count]) => (
           <button
             key={label}
             role="tab"
             aria-selected={view === value}
             onClick={() => setView(value)}
-            className={`flex h-8 shrink-0 items-center gap-2 rounded-md px-3 text-sm font-bold transition-colors ${
-              view === value ? 'bg-primary text-primary-ink' : 'text-muted hover:text-ink'
-            }`}
+            className="segmented__tab"
           >
             {label}
-            <span className={`font-mono text-xs ${view === value ? 'opacity-80' : ''}`}>{count}</span>
+            <span className="segmented__count">{count}</span>
           </button>
         ))}
       </div>
@@ -101,7 +99,7 @@ export default function TicketsPage() {
 
       {loading ? (
         <div className="flex flex-col gap-3" aria-busy="true">
-          {[1, 2, 3].map((i) => <div key={i} className="card h-24 animate-pulse" />)}
+          {[1, 2, 3].map((i) => <div key={i} className="skeleton h-24" />)}
         </div>
       ) : tickets.length ? (
         <div className="flex flex-col gap-3">

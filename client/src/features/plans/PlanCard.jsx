@@ -48,10 +48,10 @@ export default function PlanCard({ plan, canEdit, onOpen, onEdit, onDelete }) {
           <Badge tone={plan.isActive ? 'ok' : 'off'} dot>{plan.isActive ? 'On sale' : 'Inactive'}</Badge>
           {canEdit && (
             <>
-              <button className="rounded-lg p-2 text-muted hover:bg-primary-soft hover:text-primary" onClick={() => onEdit(plan)} aria-label={`Edit ${plan.name}`}>
+              <button className="icon-btn" onClick={() => onEdit(plan)} aria-label={`Edit ${plan.name}`}>
                 <Pencil size={15} />
               </button>
-              <button className="rounded-lg p-2 text-muted hover:bg-bad-soft hover:text-bad" onClick={() => onDelete(plan)} aria-label={`Delete ${plan.name}`}>
+              <button className="icon-btn icon-btn--danger" onClick={() => onDelete(plan)} aria-label={`Delete ${plan.name}`}>
                 <Trash2 size={15} />
               </button>
             </>

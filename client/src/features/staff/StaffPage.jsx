@@ -119,7 +119,7 @@ export default function StaffPage() {
       header: 'Staff member',
       render: (u) => (
         <div className="flex items-center gap-3">
-          <span className={`grid h-9 w-9 shrink-0 place-items-center rounded-full text-xs font-extrabold ${u.isActive ? 'bg-primary-soft text-primary' : 'bg-off-soft text-off'}`}>
+          <span className={`avatar ${u.isActive ? '' : 'avatar--off'}`}>
             {initials(u.name)}
           </span>
           <div className="min-w-0 text-left">
@@ -139,14 +139,14 @@ export default function StaffPage() {
       align: 'right',
       render: (u) => (
         <div className="flex justify-end gap-1" onClick={(e) => e.stopPropagation()}>
-          <button className="rounded-lg p-2 text-muted hover:bg-primary-soft hover:text-primary" onClick={() => openForm(u)} aria-label={`Edit ${u.name}`}>
+          <button className="icon-btn" onClick={() => openForm(u)} aria-label={`Edit ${u.name}`}>
             <Pencil size={16} />
           </button>
           {isSelf(u) ? (
             <span className="w-8" aria-hidden="true" />
           ) : (
             <button
-              className="rounded-lg p-2 text-muted hover:bg-bad-soft hover:text-bad"
+              className="icon-btn icon-btn--danger"
               onClick={() => { setDeleteError(''); setToDelete(u); }}
               aria-label={`Remove ${u.name}`}
             >
@@ -173,18 +173,18 @@ export default function StaffPage() {
         )}
       />
 
-      <div className="flex gap-6 border-b border-line" role="tablist" aria-label="Access Control">
+      <div className="underline-tabs" role="tablist" aria-label="Access Control">
         {[['staff', 'Staff accounts'], ['requests', 'Access requests']].map(([key, label]) => (
           <button
             key={key}
             role="tab"
             aria-selected={tab === key}
             onClick={() => setParams(key === 'requests' ? { tab: 'requests' } : {})}
-            className={`-mb-px flex h-10 items-center gap-2 border-b-2 text-sm font-bold ${tab === key ? 'border-primary text-ink' : 'border-transparent text-muted hover:text-ink'}`}
+            className="underline-tab"
           >
             {label}
             {key === 'requests' && pending > 0 && (
-              <span className="rounded-full bg-bad px-2 font-mono text-xs text-white dark:text-bg">{pending}</span>
+              <span className="count-pill">{pending}</span>
             )}
           </button>
         ))}

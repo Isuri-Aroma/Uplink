@@ -70,11 +70,11 @@ export default function CustomerDirectory({ customers, grouped, canDelete, onOpe
               </div>
 
               <div className="col-start-3 row-start-1 flex justify-end gap-1 md:col-start-auto md:row-start-auto" onClick={(e) => e.stopPropagation()}>
-                <button className="rounded-lg p-2 text-muted hover:bg-primary-soft hover:text-primary" onClick={() => onEdit(c)} aria-label={`Edit ${c.nameWithInitials}`}>
+                <button className="icon-btn" onClick={() => onEdit(c)} aria-label={`Edit ${c.nameWithInitials}`}>
                   <Pencil size={15} />
                 </button>
                 {canDelete && (
-                  <button className="rounded-lg p-2 text-muted hover:bg-bad-soft hover:text-bad" onClick={() => onDelete(c)} aria-label={`Delete ${c.nameWithInitials}`}>
+                  <button className="icon-btn icon-btn--danger" onClick={() => onDelete(c)} aria-label={`Delete ${c.nameWithInitials}`}>
                     <Trash2 size={15} />
                   </button>
                 )}

@@ -13,7 +13,7 @@ export function LogoMark({ className = 'h-9 w-9' }) {
 
 export default function Logo({ className = '' }) {
   return (
-    <span className={`flex items-center gap-2.5 ${className}`}>
+    <span className={`logo flex items-center gap-2.5 ${className}`}>
       <LogoMark />
       <span className="text-xl font-extrabold tracking-tight">
         <span className="text-primary">Up</span>link

@@ -66,7 +66,7 @@ export default function RequestAccessPage() {
       <AuthShell>
         <div className="flex flex-col items-start gap-4">
           <span className="grid h-12 w-12 place-items-center rounded-full bg-ok-soft text-ok"><CheckCircle2 size={24} /></span>
-          <h1 className="text-2xl font-extrabold tracking-tight">Request sent</h1>
+          <h1 className="auth-title">Request sent</h1>
           <p className="text-sm text-muted">
             An Uplink admin will review your request. Once it is approved, sign in with <b className="text-ink">{form.email}</b> and the password you chose.
           </p>
@@ -78,14 +78,14 @@ export default function RequestAccessPage() {
 
   return (
     <AuthShell footer="Requests are reviewed by an Uplink admin, usually within one working day.">
-      <Link to="/login" className="mb-6 inline-flex items-center gap-1.5 text-sm font-semibold text-muted hover:text-ink">
+      <Link to="/login" className="back-link mb-6">
         <ArrowLeft size={16} /> Back to sign in
       </Link>
-      <h1 className="text-2xl font-extrabold tracking-tight">Request access</h1>
-      <p className="mt-1.5 text-sm text-muted">New to the team? Ask for an Uplink account. An admin approves it before you can sign in.</p>
+      <h1 className="auth-title">Request access</h1>
+      <p className="auth-text">New to the team? Ask for an Uplink account. An admin approves it before you can sign in.</p>
 
       {serverError && (
-        <div role="alert" className="mt-6 flex items-start gap-2.5 rounded-lg border border-bad/30 bg-bad-soft px-3.5 py-3 text-sm text-bad">
+        <div role="alert" className="form-alert mt-6">
           <AlertCircle size={18} className="mt-px shrink-0" />
           {serverError}
         </div>

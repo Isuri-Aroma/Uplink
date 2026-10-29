@@ -9,9 +9,9 @@ export default function AppLayout() {
   return (
     <div className="min-h-screen">
       <Sidebar open={menuOpen} onClose={() => setMenuOpen(false)} />
-      <div className="lg:pl-64">
+      <div className="app-content">
         <Topbar onMenu={() => setMenuOpen(true)} />
-        <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
+        <main className="app-main">
           <Outlet />
         </main>
       </div>

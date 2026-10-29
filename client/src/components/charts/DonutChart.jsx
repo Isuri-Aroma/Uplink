@@ -19,10 +19,10 @@ export default function DonutChart({ segments, centerLabel }) {
   });
 
   return (
-    <div className="flex flex-wrap items-center justify-center gap-6">
-      <svg viewBox="0 0 180 180" className="h-44 w-44 shrink-0" role="img" aria-label={segments.map((s) => `${s.label} ${s.value}`).join(', ')}>
+    <div className="donut">
+      <svg viewBox="0 0 180 180" role="img" aria-label={segments.map((s) => `${s.label} ${s.value}`).join(', ')}>
         <g transform="rotate(-90 90 90)">
-          <circle cx="90" cy="90" r={R} fill="none" className="stroke-line/60" strokeWidth="18" />
+          <circle cx="90" cy="90" r={R} fill="none" className="donut__track" strokeWidth="18" />
           {arcs.map((a) =>
             a.value ? (
               <circle
@@ -35,33 +35,29 @@ export default function DonutChart({ segments, centerLabel }) {
                 strokeWidth={active === a.i ? 24 : 18}
                 strokeDasharray={`${a.dash} ${C - a.dash}`}
                 strokeDashoffset={-a.offset}
-                className="cursor-pointer transition-[stroke-width]"
+                className="donut__segment"
                 onMouseEnter={() => setActive(a.i)}
                 onMouseLeave={() => setActive(null)}
               />
             ) : null
           )}
         </g>
-        <text x="90" y="86" textAnchor="middle" className="fill-ink font-mono text-[30px] font-bold">
-          {focus ? focus.value : centerLabel.value}
-        </text>
-        <text x="90" y="108" textAnchor="middle" className="fill-muted text-[11px]">
-          {focus ? focus.label.toLowerCase() : centerLabel.text}
-        </text>
+        <text x="90" y="86" textAnchor="middle" className="donut__value">{focus ? focus.value : centerLabel.value}</text>
+        <text x="90" y="108" textAnchor="middle" className="donut__caption">{focus ? focus.label.toLowerCase() : centerLabel.text}</text>
       </svg>
 
-      <ul className="flex min-w-36 flex-col gap-2 text-sm">
+      <ul className="legend">
         {segments.map((s, i) => (
           <li
             key={s.label}
-            className={`flex cursor-default items-center gap-2.5 rounded-md px-1 ${active === i ? 'bg-primary-soft/60' : ''}`}
+            className={`legend__row ${active === i ? 'legend__row--active' : ''}`}
             onMouseEnter={() => setActive(i)}
             onMouseLeave={() => setActive(null)}
           >
-            <span className="h-2.5 w-2.5 shrink-0 rounded-sm" style={{ background: s.color }} />
-            <span className="flex-1">{s.label}</span>
-            <span className="font-mono font-semibold tabular-nums">{s.value}</span>
-            <span className="w-10 text-right text-xs text-muted tabular-nums">{Math.round((s.value / total) * 100)}%</span>
+            <span className="legend__swatch" style={{ background: s.color }} />
+            <span className="legend__label">{s.label}</span>
+            <span className="legend__value">{s.value}</span>
+            <span className="legend__pct">{Math.round((s.value / total) * 100)}%</span>
           </li>
         ))}
       </ul>

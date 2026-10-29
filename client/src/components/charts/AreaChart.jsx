@@ -29,20 +29,18 @@ export default function AreaChart({ data, height = 220, valueLabel = 'value' }) 
         <svg width={width} height={height} role="img" aria-label={`${valueLabel} by month`}>
           {ticks.map((t) => (
             <g key={t}>
-              <line x1={PAD.left} x2={width - PAD.right} y1={y(t)} y2={y(t)} className="stroke-line" strokeDasharray={t ? '3 4' : undefined} />
-              <text x={PAD.left - 8} y={y(t)} dy="0.32em" textAnchor="end" className="fill-muted font-mono text-[10px]">{t}</text>
+              <line x1={PAD.left} x2={width - PAD.right} y1={y(t)} y2={y(t)} className="chart-grid" strokeDasharray={t ? '3 4' : undefined} />
+              <text x={PAD.left - 8} y={y(t)} dy="0.32em" textAnchor="end" className="chart-axis chart-axis--mono">{t}</text>
             </g>
           ))}
           {data.map((d, i) => (
-            <text key={d.label} x={x(i)} y={height - 8} textAnchor="middle" className="fill-muted text-[10px]">{d.label}</text>
+            <text key={d.label} x={x(i)} y={height - 8} textAnchor="middle" className="chart-axis">{d.label}</text>
           ))}
-          <path d={area} className="fill-primary/10" />
-          <path d={line} fill="none" className="stroke-primary" strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
-          {hover !== null && (
-            <line x1={x(hover)} x2={x(hover)} y1={PAD.top} y2={y(0)} className="stroke-muted" strokeDasharray="3 3" />
-          )}
+          <path d={area} className="chart-area" />
+          <path d={line} className="chart-line" />
+          {hover !== null && <line x1={x(hover)} x2={x(hover)} y1={PAD.top} y2={y(0)} className="chart-crosshair" />}
           {[hover ?? last].map((i) => (
-            <circle key={i} cx={x(i)} cy={y(data[i].value)} r="4.5" className="fill-primary stroke-surface" strokeWidth="2" />
+            <circle key={i} cx={x(i)} cy={y(data[i].value)} r="4.5" className="chart-point" />
           ))}
           {data.map((d, i) => (
             <rect
@@ -59,12 +57,9 @@ export default function AreaChart({ data, height = 220, valueLabel = 'value' }) 
         </svg>
       )}
       {hover !== null && (
-        <div
-          className="pointer-events-none absolute -translate-x-1/2 -translate-y-full whitespace-nowrap rounded-lg border border-line bg-surface px-2.5 py-1.5 text-xs shadow-lg"
-          style={{ left: x(hover), top: y(data[hover].value) - 8 }}
-        >
-          <span className="font-semibold">{data[hover].full}</span>
-          <span className="ml-2 font-mono font-bold">{data[hover].value}</span> <span className="text-muted">{valueLabel}</span>
+        <div className="chart-tip" style={{ left: x(hover), top: y(data[hover].value) - 8 }}>
+          <b>{data[hover].full}</b>
+          <strong>{data[hover].value}</strong> <span>{valueLabel}</span>
         </div>
       )}
     </div>

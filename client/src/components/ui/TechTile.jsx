@@ -1,14 +1,15 @@
 const TILE = {
-  Fibre: ['FTTH', 'bg-primary-soft text-primary'],
-  VDSL: ['VDSL', 'bg-off-soft text-off'],
-  '4G LTE': ['4G', 'bg-accent/10 text-accent'],
-  '5G': ['5G', 'bg-accent/10 text-accent'],
+  Fibre: ['FTTH', 'fibre'],
+  VDSL: ['VDSL', 'vdsl'],
+  '4G LTE': ['4G', 'wireless'],
+  '5G': ['5G', 'wireless'],
 };
 
-export default function TechTile({ technology, size = 'h-8 w-8' }) {
-  const [label, tone] = TILE[technology] || ['—', 'bg-off-soft text-off'];
+// size: '' (32px), 'md' (40px), 'lg' (56px)
+export default function TechTile({ technology, size = '' }) {
+  const [label, tone] = TILE[technology] || ['—', 'vdsl'];
   return (
-    <span className={`grid shrink-0 place-items-center rounded-lg font-mono text-[10px] font-bold ${size} ${tone}`} title={technology}>
+    <span className={`tech-tile tech-tile--${tone} ${size ? `tech-tile--${size}` : ''}`} title={technology}>
       {label}
     </span>
   );

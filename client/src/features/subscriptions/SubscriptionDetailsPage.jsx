@@ -16,19 +16,15 @@ import Timeline from '../../components/ui/Timeline';
 import SubscriptionDrawer from './SubscriptionDrawer';
 import TicketDrawer from '../tickets/TicketDrawer';
 
-const ACTION_BUTTON = {
-  primary: 'btn-primary',
-  warn: 'btn border border-warn/40 text-warn hover:bg-warn-soft',
-  danger: 'btn border border-bad/40 text-bad hover:bg-bad-soft',
-};
+const ACTION_BUTTON = { primary: 'btn-primary', warn: 'btn-warn-outline', danger: 'btn-danger-outline' };
 
 const DOT = { Pending: 'bg-warn', Active: 'bg-ok', Suspended: 'bg-bad', Terminated: 'bg-off' };
 
 function Detail({ label, children, mono }) {
   return (
-    <div className="flex flex-col gap-0.5">
-      <dt className="text-xs font-bold uppercase tracking-wide text-muted">{label}</dt>
-      <dd className={`text-sm ${mono ? 'font-mono' : ''}`}>{children || '—'}</dd>
+    <div className={`detail ${mono ? 'detail--mono' : ''}`}>
+      <dt>{label}</dt>
+      <dd>{children || '—'}</dd>
     </div>
   );
 }
@@ -113,13 +109,13 @@ export default function SubscriptionDetailsPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <Link to="/subscriptions" className="inline-flex w-fit items-center gap-1.5 text-sm font-semibold text-muted hover:text-ink">
+      <Link to="/subscriptions" className="back-link">
         <ArrowLeft size={16} /> Subscriptions
       </Link>
 
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="flex items-center gap-4">
-          <TechTile technology={plan?.technology} size="h-14 w-14 text-xs" />
+          <TechTile technology={plan?.technology} size="lg" />
           <div>
             <div className="flex flex-wrap items-center gap-3">
               <h1 className="font-mono text-2xl font-bold tracking-tight">{sub.accountNo}</h1>
@@ -135,21 +131,21 @@ export default function SubscriptionDetailsPage() {
           {ACTIONS[sub.status].map((a) => (
             <button key={a.to} className={ACTION_BUTTON[a.tone]} onClick={() => openAction(a)}>{a.label}</button>
           ))}
-          <button className="btn-ghost border border-line" onClick={() => import('./serviceOrderPdf').then((m) => m.downloadServiceOrder(sub))}>
+          <button className="btn-outline" onClick={() => import('./serviceOrderPdf').then((m) => m.downloadServiceOrder(sub))}>
             <FileDown size={16} /> Service order PDF
           </button>
           {!terminated && (
-            <button className="btn-ghost border border-line" onClick={() => setReporting({ subscriptionId: sub._id })}>
+            <button className="btn-outline" onClick={() => setReporting({ subscriptionId: sub._id })}>
               <LifeBuoy size={16} /> Report fault
             </button>
           )}
           {!terminated && (
-            <button className="btn-ghost border border-line" onClick={() => setEditing({ subscription: sub })}>
+            <button className="btn-outline" onClick={() => setEditing({ subscription: sub })}>
               <Pencil size={16} /> Edit
             </button>
           )}
           {isAdmin && (
-            <button className="btn-ghost border border-line text-bad hover:bg-bad-soft" onClick={() => { setActionError(''); setConfirmDelete(true); }}>
+            <button className="btn-danger-outline" onClick={() => { setActionError(''); setConfirmDelete(true); }}>
               <Trash2 size={16} /> Delete
             </button>
           )}

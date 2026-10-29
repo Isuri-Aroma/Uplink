@@ -20,27 +20,27 @@ function ApproveDialog({ request, busy, error, onConfirm, onCancel }) {
   const [role, setRole] = useState('agent');
   if (!request) return null;
   return (
-    <div className="fixed inset-0 z-50 grid place-items-center p-4" role="dialog" aria-modal="true" aria-labelledby="approve-title">
-      <div className="absolute inset-0 bg-black/40" onClick={onCancel} />
-      <div className="card relative flex w-full max-w-md flex-col gap-4 p-6 shadow-2xl">
+    <div className="overlay dialog-wrap" role="dialog" aria-modal="true" aria-labelledby="approve-title">
+      <div className="overlay__backdrop" onClick={onCancel} />
+      <div className="dialog">
         <div>
-          <h2 id="approve-title" className="font-bold">Approve {request.name}?</h2>
-          <p className="mt-1 text-sm text-muted">An account is created for {request.email}. They sign in with the password they chose.</p>
+          <h2 id="approve-title" className="dialog__title">Approve {request.name}?</h2>
+          <p className="dialog__text">An account is created for {request.email}. They sign in with the password they chose.</p>
         </div>
         <fieldset>
           <legend className="label">Role</legend>
           <div className="grid grid-cols-2 gap-2">
             {[['agent', 'Agent', 'Customers, subscriptions, tickets'], ['admin', 'Admin', 'Everything, plus plans and staff']].map(([v, l, h]) => (
-              <label key={v} className={`flex cursor-pointer flex-col rounded-lg border p-3 ${role === v ? 'border-primary bg-primary-soft' : 'border-line'}`}>
+              <label key={v} className={`choice-card ${role === v ? 'choice-card--on' : ''}`}>
                 <input type="radio" name="approve-role" value={v} checked={role === v} onChange={() => setRole(v)} className="sr-only" />
-                <span className={`text-sm font-bold ${role === v ? 'text-primary' : ''}`}>{l}</span>
-                <span className="text-xs text-muted">{h}</span>
+                <span className="choice-card__title">{l}</span>
+                <span className="choice-card__text">{h}</span>
               </label>
             ))}
           </div>
         </fieldset>
-        {error && <p role="alert" className="rounded-lg bg-bad-soft px-3 py-2 text-sm font-medium text-bad">{error}</p>}
-        <div className="flex justify-end gap-2">
+        {error && <p role="alert" className="dialog__error">{error}</p>}
+        <div className="dialog__actions">
           <button className="btn-ghost" onClick={onCancel} disabled={busy}>Cancel</button>
           <button className="btn-primary" onClick={() => onConfirm(role)} disabled={busy} autoFocus>
             {busy && <Loader2 size={16} className="animate-spin" />}
@@ -106,16 +106,16 @@ export default function AccessRequestsPanel({ onChanged }) {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center gap-2">
-        <div className="flex gap-1 rounded-lg border border-line bg-surface p-1" role="tablist" aria-label="Request status">
+        <div className="segmented" role="tablist" aria-label="Request status">
           {views.map(([value, label]) => (
             <button
               key={label}
               role="tab"
               aria-selected={status === value}
               onClick={() => setStatus(value)}
-              className={`flex h-8 items-center gap-2 rounded-md px-3 text-sm font-bold ${status === value ? 'bg-primary text-primary-ink' : 'text-muted hover:text-ink'}`}
+              className="segmented__tab"
             >
-              {label} <span className="font-mono text-xs">{value ? counts[value] || 0 : total}</span>
+              {label} <span className="segmented__count">{value ? counts[value] || 0 : total}</span>
             </button>
           ))}
         </div>
@@ -123,13 +123,13 @@ export default function AccessRequestsPanel({ onChanged }) {
       </div>
 
       {loading ? (
-        <div className="card h-40 animate-pulse" aria-busy="true" />
+        <div className="skeleton h-40" aria-busy="true" />
       ) : requests.length ? (
         <ul className="flex flex-col gap-3">
           {requests.map((r) => (
             <li key={r._id} className="card grid gap-4 p-4 sm:grid-cols-[1fr_auto] sm:items-center">
               <div className="flex min-w-0 gap-3">
-                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-primary-soft text-xs font-extrabold text-primary">{initials(r.name)}</span>
+                <span className="avatar h-10 w-10">{initials(r.name)}</span>
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
                     <p className="font-bold">{r.name}</p>
@@ -149,7 +149,7 @@ export default function AccessRequestsPanel({ onChanged }) {
               <div className="flex items-center gap-2 sm:justify-end">
                 {r.status === 'Pending' ? (
                   <>
-                    <button className="btn border border-bad/40 text-bad hover:bg-bad-soft" onClick={() => { setError(''); setRejecting(r); }}>
+                    <button className="btn-danger-outline" onClick={() => { setError(''); setRejecting(r); }}>
                       <X size={16} /> Reject
                     </button>
                     <button className="btn-primary" onClick={() => { setError(''); setApproving(r); }}>
@@ -159,7 +159,7 @@ export default function AccessRequestsPanel({ onChanged }) {
                 ) : (
                   <>
                     <Badge tone={STATUS_TONE[r.status]} dot>{r.status}</Badge>
-                    <button className="rounded-lg p-2 text-muted hover:bg-bad-soft hover:text-bad" onClick={() => { setError(''); setRemoving(r); }} aria-label={`Delete request from ${r.name}`}>
+                    <button className="icon-btn icon-btn--danger" onClick={() => { setError(''); setRemoving(r); }} aria-label={`Delete request from ${r.name}`}>
                       <Trash2 size={16} />
                     </button>
                   </>

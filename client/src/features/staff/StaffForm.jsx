@@ -64,17 +64,15 @@ export default function StaffForm({ user, isSelf, errors, onChangeErrors, onSubm
           {ROLES.map((r) => (
             <label
               key={r.value}
-              className={`flex cursor-pointer flex-col rounded-lg border p-3 ${
-                form.role === r.value ? 'border-primary bg-primary-soft' : 'border-line hover:border-muted'
-              } ${isSelf ? 'cursor-not-allowed opacity-60' : ''}`}
+              className={`choice-card ${form.role === r.value ? 'choice-card--on' : ''} ${isSelf ? 'cursor-not-allowed opacity-60' : ''}`}
             >
               <input type="radio" name="role" value={r.value} checked={form.role === r.value} onChange={set('role')} className="sr-only" />
-              <span className={`text-sm font-bold ${form.role === r.value ? 'text-primary' : ''}`}>{r.label}</span>
-              <span className="text-xs text-muted">{r.help}</span>
+              <span className="choice-card__title">{r.label}</span>
+              <span className="choice-card__text">{r.help}</span>
             </label>
           ))}
         </div>
-        {isSelf && <p className="mt-1.5 text-xs text-muted">You can't change your own role or disable your own account.</p>}
+        {isSelf && <p className="field-hint">You can't change your own role or disable your own account.</p>}
       </fieldset>
 
       <div className="flex flex-col gap-4 rounded-lg border border-line p-4">

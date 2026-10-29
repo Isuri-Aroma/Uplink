@@ -14,18 +14,14 @@ import StatusDialog from '../../components/ui/StatusDialog';
 import Timeline from '../../components/ui/Timeline';
 import TicketDrawer from './TicketDrawer';
 
-const ACTION_BUTTON = {
-  primary: 'btn-primary',
-  warn: 'btn border border-warn/40 text-warn hover:bg-warn-soft',
-};
+const ACTION_BUTTON = { primary: 'btn-primary', warn: 'btn-warn-outline' };
 const DOT = { Open: 'bg-bad', 'In Progress': 'bg-warn', Resolved: 'bg-ok', Closed: 'bg-off' };
-const STRIPE = { Critical: 'bg-bad', High: 'bg-warn', Medium: 'bg-primary', Low: 'bg-off' };
 
 function Detail({ label, children, mono }) {
   return (
-    <div className="flex flex-col gap-0.5">
-      <dt className="text-xs font-bold uppercase tracking-wide text-muted">{label}</dt>
-      <dd className={`text-sm ${mono ? 'font-mono' : ''}`}>{children || '—'}</dd>
+    <div className={`detail ${mono ? 'detail--mono' : ''}`}>
+      <dt>{label}</dt>
+      <dd>{children || '—'}</dd>
     </div>
   );
 }
@@ -102,13 +98,13 @@ export default function TicketDetailsPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <Link to="/tickets" className="inline-flex w-fit items-center gap-1.5 text-sm font-semibold text-muted hover:text-ink">
+      <Link to="/tickets" className="back-link">
         <ArrowLeft size={16} /> Trouble Tickets
       </Link>
 
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="flex gap-4">
-          <span className={`w-1.5 shrink-0 rounded-full ${STRIPE[t.priority]}`} aria-hidden="true" />
+          <span className={`w-1.5 shrink-0 rounded-full stripe--${t.priority}`} aria-hidden="true" />
           <div>
             <div className="flex flex-wrap items-center gap-2">
               <span className="font-mono text-sm font-semibold text-muted">{t.ticketNo}</span>
@@ -125,15 +121,15 @@ export default function TicketDetailsPage() {
           {TICKET_ACTIONS[t.status].map((a) => (
             <button key={a.label} className={ACTION_BUTTON[a.tone]} onClick={() => { setActionError(''); setAction(a); }}>{a.label}</button>
           ))}
-          <button className="btn-ghost border border-line" onClick={() => import('./jobCardPdf').then((m) => m.downloadJobCard(t))}>
+          <button className="btn-outline" onClick={() => import('./jobCardPdf').then((m) => m.downloadJobCard(t))}>
             <FileDown size={16} /> Job card PDF
           </button>
           {!closed && (
-            <button className="btn-ghost border border-line" onClick={() => setEditing({ ticket: t })}>
+            <button className="btn-outline" onClick={() => setEditing({ ticket: t })}>
               <Pencil size={16} /> Edit
             </button>
           )}
-          <button className="btn-ghost border border-line text-bad hover:bg-bad-soft" onClick={() => { setActionError(''); setConfirmDelete(true); }}>
+          <button className="btn-danger-outline" onClick={() => { setActionError(''); setConfirmDelete(true); }}>
             <Trash2 size={16} /> Delete
           </button>
         </div>
@@ -160,7 +156,7 @@ export default function TicketDetailsPage() {
           <section className="card flex flex-col gap-4 p-5">
             <h2 className="font-bold">Service</h2>
             <Link to={`/subscriptions/${sub?._id}`} className="flex items-center gap-3 rounded-lg border border-line p-3 hover:border-primary">
-              <TechTile technology={sub?.plan?.technology} size="h-10 w-10" />
+              <TechTile technology={sub?.plan?.technology} size="md" />
               <div className="min-w-0">
                 <p className="font-mono text-sm font-semibold text-primary">{sub?.accountNo}</p>
                 <p className="truncate text-sm">{sub?.plan?.name} · {sub && place(sub.installAddress)}</p>

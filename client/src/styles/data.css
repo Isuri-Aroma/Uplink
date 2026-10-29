@@ -1,0 +1,273 @@
+/* Table on desktop, stacked cards on phones */
+.data-table {
+  display: none;
+  overflow-x: auto;
+}
+.data-table table {
+  width: 100%;
+  font-size: 0.875rem;
+}
+.data-table th {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid rgb(var(--line));
+  text-align: left;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.025em;
+  text-transform: uppercase;
+  color: rgb(var(--muted));
+}
+.data-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid rgb(var(--line));
+  vertical-align: middle;
+}
+.data-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+.data-table .align-right {
+  text-align: right;
+}
+.data-table--clickable tbody tr {
+  cursor: pointer;
+}
+.data-table--clickable tbody tr:hover {
+  background: rgb(var(--primary-soft) / 0.4);
+}
+.data-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.data-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem;
+}
+.data-card__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 0.875rem;
+}
+.data-card__label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.025em;
+  text-transform: uppercase;
+  color: rgb(var(--muted));
+}
+.data-card__value {
+  text-align: right;
+}
+@media (min-width: 768px) {
+  .data-table { display: block; }
+  .data-cards { display: none; }
+}
+.skeleton-rows > div {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  border-bottom: 1px solid rgb(var(--line));
+}
+.skeleton-rows > div:last-child {
+  border-bottom: 0;
+}
+.skeleton-rows span {
+  height: 1rem;
+  border-radius: 0.25rem;
+  background: rgb(var(--line));
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+/* Segmented tabs (ticket views, request views) */
+.segmented {
+  display: flex;
+  gap: 0.25rem;
+  width: 100%;
+  overflow-x: auto;
+  padding: 0.25rem;
+  border: 1px solid rgb(var(--line));
+  border-radius: var(--radius);
+  background: rgb(var(--surface));
+}
+@media (min-width: 640px) {
+  .segmented { width: fit-content; }
+}
+.segmented__tab {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 0.5rem;
+  height: 2rem;
+  padding: 0 0.75rem;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: rgb(var(--muted));
+  transition: background-color 0.15s, color 0.15s;
+}
+.segmented__tab:hover {
+  color: rgb(var(--ink));
+}
+.segmented__tab[aria-selected='true'] {
+  background: rgb(var(--primary));
+  color: rgb(var(--on-primary));
+}
+.segmented__count {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}
+
+/* Status tabs with coloured counts (subscriptions) */
+.status-tabs {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+}
+.status-tab {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 0.5rem;
+  height: var(--control-height);
+  padding: 0 1rem;
+  border: 1px solid rgb(var(--line));
+  border-radius: var(--radius);
+  background: rgb(var(--surface));
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: rgb(var(--muted));
+}
+.status-tab:hover {
+  color: rgb(var(--ink));
+}
+.status-tab[aria-selected='true'] {
+  border-color: rgb(var(--primary));
+  color: rgb(var(--ink));
+  box-shadow: inset 0 -3px 0 rgb(var(--primary));
+}
+.status-tab__count {
+  padding: 0 0.5rem;
+  border-radius: 9999px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}
+
+/* Underlined page tabs (access control) */
+.underline-tabs {
+  display: flex;
+  gap: 1.5rem;
+  border-bottom: 1px solid rgb(var(--line));
+}
+.underline-tab {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: var(--control-height);
+  margin-bottom: -1px;
+  border-bottom: 2px solid transparent;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: rgb(var(--muted));
+}
+.underline-tab:hover {
+  color: rgb(var(--ink));
+}
+.underline-tab[aria-selected='true'] {
+  border-bottom-color: rgb(var(--primary));
+  color: rgb(var(--ink));
+}
+
+/* FTTH / VDSL / 4G / 5G tile */
+.tech-tile {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--radius);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+}
+.tech-tile--fibre { background: rgb(var(--primary-soft)); color: rgb(var(--primary)); }
+.tech-tile--vdsl { background: rgb(var(--off-soft)); color: rgb(var(--off)); }
+.tech-tile--wireless { background: rgb(var(--accent) / 0.1); color: rgb(var(--accent)); }
+.tech-tile--md { width: 2.5rem; height: 2.5rem; }
+.tech-tile--lg { width: 3.5rem; height: 3.5rem; font-size: 0.75rem; }
+
+/* Data used against the plan cap */
+.usage {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  min-width: 0;
+}
+.usage__track {
+  height: 0.375rem;
+  overflow: hidden;
+  border-radius: 9999px;
+  background: rgb(var(--line));
+}
+.usage--large .usage__track {
+  height: 0.625rem;
+}
+.usage__fill {
+  height: 100%;
+  border-radius: 9999px;
+  background: rgb(var(--accent));
+}
+.usage--high .usage__fill {
+  background: rgb(var(--warn));
+}
+.usage__text {
+  font-size: 0.75rem;
+  color: rgb(var(--muted));
+}
+.usage--high .usage__text {
+  font-weight: 600;
+  color: rgb(var(--warn));
+}
+
+/* Vertical history list */
+.timeline {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding-left: 1.25rem;
+  border-left: 1px solid rgb(var(--line));
+}
+.timeline__item {
+  position: relative;
+}
+.timeline__dot {
+  position: absolute;
+  left: -26px;
+  top: 0.25rem;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 9999px;
+  box-shadow: 0 0 0 4px rgb(var(--surface));
+}
+.timeline__label {
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+.timeline__note {
+  font-size: 0.875rem;
+}
+.timeline__meta {
+  font-size: 0.75rem;
+  color: rgb(var(--muted));
+}
+
+/* Priority colour stripe */
+.stripe--Critical { background: rgb(var(--bad)); }
+.stripe--High { background: rgb(var(--warn)); }
+.stripe--Medium { background: rgb(var(--primary)); }
+.stripe--Low { background: rgb(var(--off)); }

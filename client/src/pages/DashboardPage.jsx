@@ -21,8 +21,6 @@ const greeting = () => {
   return h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
 };
 
-const STRIPE = { Critical: 'bg-bad', High: 'bg-warn', Medium: 'bg-primary', Low: 'bg-off' };
-
 function Panel({ title, link, children, className = '' }) {
   return (
     <section className={`card flex flex-col gap-4 p-5 ${className}`}>
@@ -65,7 +63,7 @@ export default function DashboardPage() {
           <p className="mt-1 text-sm text-muted">{today}</p>
         </div>
         <div className="flex gap-2">
-          <button className="btn-ghost border border-line" onClick={() => setNewTicket({})}>
+          <button className="btn-outline" onClick={() => setNewTicket({})}>
             <LifeBuoy size={16} /> Log a fault
           </button>
           <button className="btn-primary" onClick={() => setNewSub({})}>
@@ -76,7 +74,7 @@ export default function DashboardPage() {
 
       {!d ? (
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4" aria-busy="true">
-          {[1, 2, 3, 4].map((i) => <div key={i} className="card h-28 animate-pulse" />)}
+          {[1, 2, 3, 4].map((i) => <div key={i} className="skeleton h-28" />)}
         </div>
       ) : (
         <>
@@ -140,7 +138,7 @@ export default function DashboardPage() {
                         onClick={() => navigate(`/tickets/${t._id}`)}
                         className="grid w-full grid-cols-[4px_1fr_auto] items-center gap-3 overflow-hidden rounded-lg border border-line pr-3 text-left hover:border-primary"
                       >
-                        <span className={`self-stretch ${STRIPE[t.priority]}`} />
+                        <span className={`self-stretch stripe--${t.priority}`} />
                         <span className="min-w-0 py-2.5">
                           <span className="block truncate text-sm font-bold">{t.subject}</span>
                           <span className="block truncate font-mono text-xs text-muted">

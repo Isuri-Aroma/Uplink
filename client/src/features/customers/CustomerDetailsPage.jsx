@@ -16,9 +16,9 @@ import SubscriptionDrawer from '../subscriptions/SubscriptionDrawer';
 
 function Detail({ label, children, mono }) {
   return (
-    <div className="flex flex-col gap-0.5">
-      <dt className="text-xs font-bold uppercase tracking-wide text-muted">{label}</dt>
-      <dd className={`text-sm ${mono ? 'font-mono' : ''}`}>{children || '—'}</dd>
+    <div className={`detail ${mono ? 'detail--mono' : ''}`}>
+      <dt>{label}</dt>
+      <dd>{children || '—'}</dd>
     </div>
   );
 }
@@ -82,13 +82,13 @@ export default function CustomerDetailsPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <Link to="/customers" className="inline-flex w-fit items-center gap-1.5 text-sm font-semibold text-muted hover:text-ink">
+      <Link to="/customers" className="back-link">
         <ArrowLeft size={16} /> Customer Accounts
       </Link>
 
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="flex items-center gap-4">
-          <span className="grid h-14 w-14 shrink-0 place-items-center rounded-full bg-primary-soft text-lg font-extrabold text-primary">
+          <span className="avatar avatar--lg">
             {customer.nameWithInitials.split(' ').pop()[0]}
           </span>
           <div>
@@ -100,11 +100,11 @@ export default function CustomerDetailsPage() {
           </div>
         </div>
         <div className="flex gap-2">
-          <button className="btn-ghost border border-line" onClick={() => setEditing(customer)}>
+          <button className="btn-outline" onClick={() => setEditing(customer)}>
             <Pencil size={16} /> Edit
           </button>
           {isAdmin && (
-            <button className="btn-ghost border border-line text-bad hover:bg-bad-soft" onClick={() => { setDeleteError(''); setConfirming(true); }}>
+            <button className="btn-danger-outline" onClick={() => { setDeleteError(''); setConfirming(true); }}>
               <Trash2 size={16} /> Delete
             </button>
           )}
@@ -136,7 +136,7 @@ export default function CustomerDetailsPage() {
       <section className="flex flex-col gap-3">
         <div className="flex items-center justify-between gap-4">
           <h2 className="font-bold">Subscriptions ({customer.subscriptions.length})</h2>
-          <button className="btn-ghost border border-line" onClick={() => setOrdering({ customerId: customer._id })}>
+          <button className="btn-outline" onClick={() => setOrdering({ customerId: customer._id })}>
             <Plus size={16} /> New subscription
           </button>
         </div>

@@ -1,0 +1,71 @@
+/* Ocean Fibre colours, stored as "R G B" so they work with any opacity */
+:root {
+  --bg: 243 248 249;
+  --surface: 255 255 255;
+  --line: 215 230 234;
+  --ink: 12 34 48;
+  --muted: 85 112 128;
+  --primary: 11 107 203;
+  --primary-soft: 225 238 251;
+  --on-primary: 255 255 255;
+  --accent: 15 158 142;
+  --ok: 27 138 75;
+  --ok-soft: 226 243 233;
+  --warn: 168 106 18;
+  --warn-soft: 251 240 217;
+  --bad: 194 65 12;
+  --bad-soft: 252 232 221;
+  --off: 102 112 133;
+  --off-soft: 236 238 242;
+
+  --font-ui: 'Manrope', 'Segoe UI', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+  --radius: 0.5rem;
+  --radius-lg: 0.75rem;
+  --control-height: 2.5rem;
+  --shadow-panel: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+  color-scheme: light;
+}
+
+.dark {
+  --bg: 7 22 29;
+  --surface: 14 34 44;
+  --line: 30 58 71;
+  --ink: 226 240 244;
+  --muted: 134 166 180;
+  --primary: 77 163 255;
+  --primary-soft: 18 50 74;
+  --on-primary: 7 22 29;
+  --accent: 61 209 190;
+  --ok: 74 222 128;
+  --ok-soft: 18 48 32;
+  --warn: 251 191 36;
+  --warn-soft: 51 40 14;
+  --bad: 251 146 60;
+  --bad-soft: 58 30 16;
+  --off: 156 163 175;
+  --off-soft: 34 39 51;
+  color-scheme: dark;
+}
+
+body {
+  background: rgb(var(--bg));
+  color: rgb(var(--ink));
+  font-family: var(--font-ui);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgb(var(--bg)), 0 0 0 4px rgb(var(--primary));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

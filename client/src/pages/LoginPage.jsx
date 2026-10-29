@@ -54,11 +54,11 @@ export default function LoginPage() {
 
   return (
     <AuthShell footer="For authorised Uplink staff only. Forgot your password? Ask your admin to reset it.">
-      <h1 className="text-2xl font-extrabold tracking-tight">Staff sign in</h1>
-      <p className="mt-1.5 text-sm text-muted">Welcome back. Enter your work email and password to continue.</p>
+      <h1 className="auth-title">Staff sign in</h1>
+      <p className="auth-text">Welcome back. Enter your work email and password to continue.</p>
 
       {serverError && (
-        <div role="alert" className="mt-6 flex items-start gap-2.5 rounded-lg border border-bad/30 bg-bad-soft px-3.5 py-3 text-sm text-bad">
+        <div role="alert" className="form-alert mt-6">
           <AlertCircle size={18} className="mt-px shrink-0" />
           {serverError}
         </div>

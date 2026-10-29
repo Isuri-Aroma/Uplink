@@ -1,0 +1,326 @@
+/* Buttons: every variant includes the base style */
+.btn,
+.btn-primary,
+.btn-ghost,
+.btn-outline,
+.btn-danger,
+.btn-danger-outline,
+.btn-warn,
+.btn-warn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  height: var(--control-height);
+  padding: 0 1rem;
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.25rem;
+  white-space: nowrap;
+  transition: background-color 0.15s, color 0.15s, border-color 0.15s;
+}
+.btn:disabled,
+.btn-primary:disabled,
+.btn-ghost:disabled,
+.btn-outline:disabled,
+.btn-danger:disabled,
+.btn-danger-outline:disabled,
+.btn-warn:disabled,
+.btn-warn-outline:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+.btn-primary {
+  background: rgb(var(--primary));
+  color: rgb(var(--on-primary));
+}
+.btn-primary:hover:not(:disabled) {
+  background: rgb(var(--primary) / 0.9);
+}
+.btn-ghost {
+  color: rgb(var(--ink));
+}
+.btn-ghost:hover:not(:disabled) {
+  background: rgb(var(--primary-soft));
+}
+.btn-outline {
+  border: 1px solid rgb(var(--line));
+  color: rgb(var(--ink));
+}
+.btn-outline:hover:not(:disabled) {
+  background: rgb(var(--primary-soft));
+}
+.btn-danger {
+  background: rgb(var(--bad));
+  color: #fff;
+}
+.dark .btn-danger {
+  color: rgb(var(--bg));
+}
+.btn-danger:hover:not(:disabled) {
+  background: rgb(var(--bad) / 0.9);
+}
+.btn-danger-outline {
+  border: 1px solid rgb(var(--bad) / 0.4);
+  color: rgb(var(--bad));
+}
+.btn-danger-outline:hover:not(:disabled) {
+  background: rgb(var(--bad-soft));
+}
+.btn-warn-outline {
+  border: 1px solid rgb(var(--warn) / 0.4);
+  color: rgb(var(--warn));
+}
+.btn-warn-outline:hover:not(:disabled) {
+  background: rgb(var(--warn-soft));
+}
+.btn-warn {
+  background: rgb(var(--warn));
+  color: #fff;
+}
+.dark .btn-warn {
+  color: rgb(var(--bg));
+}
+
+/* Small icon-only buttons in rows and cards */
+.icon-btn {
+  display: inline-grid;
+  place-items: center;
+  padding: 0.5rem;
+  border-radius: var(--radius);
+  color: rgb(var(--muted));
+}
+.icon-btn:hover {
+  background: rgb(var(--primary-soft));
+  color: rgb(var(--primary));
+}
+.icon-btn--danger:hover {
+  background: rgb(var(--bad-soft));
+  color: rgb(var(--bad));
+}
+
+/* Text inputs, selects and textareas */
+.input {
+  width: 100%;
+  height: var(--control-height);
+  padding: 0 0.875rem;
+  border: 1px solid rgb(var(--line));
+  border-radius: var(--radius);
+  background: rgb(var(--surface));
+  color: rgb(var(--ink));
+  font-size: 0.875rem;
+}
+.input::placeholder {
+  color: rgb(var(--muted) / 0.7);
+}
+.input:focus {
+  outline: none;
+  border-color: rgb(var(--primary));
+  box-shadow: 0 0 0 3px rgb(var(--primary) / 0.25);
+}
+textarea.input {
+  height: auto;
+  padding: 0.625rem 0.875rem;
+}
+.input-error,
+.input-error:focus {
+  border-color: rgb(var(--bad));
+}
+.input-error:focus {
+  box-shadow: 0 0 0 3px rgb(var(--bad) / 0.25);
+}
+
+/* Labels and messages */
+.label {
+  display: block;
+  margin-bottom: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: rgb(var(--ink));
+}
+.field-error {
+  margin-top: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: rgb(var(--bad));
+}
+.field-hint {
+  margin-top: 0.375rem;
+  font-size: 0.75rem;
+  color: rgb(var(--muted));
+}
+
+/* Search box with icon and clear button */
+.search {
+  position: relative;
+  width: 100%;
+}
+.search .input {
+  padding-left: 2.25rem;
+  padding-right: 2.25rem;
+}
+.search__icon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgb(var(--muted));
+  pointer-events: none;
+}
+.search__clear {
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 0.25rem;
+  border-radius: 0.25rem;
+  color: rgb(var(--muted));
+}
+.search__clear:hover {
+  color: rgb(var(--ink));
+}
+@media (min-width: 640px) {
+  .search {
+    width: auto;
+    flex: 1;
+    min-width: 16rem;
+    max-width: 20rem;
+  }
+}
+
+/* Filter dropdowns: two per row on phones */
+.filter {
+  display: flex;
+  flex: 1;
+  min-width: 40%;
+  align-items: center;
+}
+.filter .input {
+  padding-right: 2rem;
+  font-weight: 600;
+}
+@media (min-width: 640px) {
+  .filter {
+    flex: none;
+    min-width: 0;
+  }
+  .filter .input {
+    width: auto;
+  }
+}
+
+/* On/off switch */
+.toggle {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  cursor: pointer;
+}
+.toggle__title {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+.toggle__text {
+  display: block;
+  font-size: 0.75rem;
+  color: rgb(var(--muted));
+}
+.toggle__switch {
+  position: relative;
+  flex-shrink: 0;
+  width: 2.75rem;
+  height: 1.5rem;
+  margin-top: 0.125rem;
+}
+.toggle__track {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: rgb(var(--line));
+  transition: background-color 0.15s;
+}
+.toggle__knob {
+  position: absolute;
+  left: 0.125rem;
+  top: 0.125rem;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 9999px;
+  background: #fff;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.2);
+  transition: transform 0.15s;
+}
+.toggle input:checked ~ .toggle__track {
+  background: rgb(var(--primary));
+}
+.toggle input:checked ~ .toggle__knob {
+  transform: translateX(1.25rem);
+}
+.toggle input:focus-visible ~ .toggle__track {
+  box-shadow: 0 0 0 2px rgb(var(--surface)), 0 0 0 4px rgb(var(--primary));
+}
+
+/* Radio options shown as buttons or cards */
+.choice {
+  display: flex;
+  height: var(--control-height);
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgb(var(--line));
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: rgb(var(--muted));
+  cursor: pointer;
+}
+.choice:hover {
+  color: rgb(var(--ink));
+}
+.choice--on {
+  border-color: rgb(var(--primary));
+  background: rgb(var(--primary-soft));
+  color: rgb(var(--primary));
+}
+.choice-card {
+  display: flex;
+  flex-direction: column;
+  padding: 0.75rem;
+  border: 1px solid rgb(var(--line));
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+.choice-card:hover {
+  border-color: rgb(var(--muted));
+}
+.choice-card--on,
+.choice-card--on:hover {
+  border-color: rgb(var(--primary));
+  background: rgb(var(--primary-soft));
+}
+.choice-card__title {
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+.choice-card--on .choice-card__title {
+  color: rgb(var(--primary));
+}
+.choice-card__text {
+  font-size: 0.75rem;
+  color: rgb(var(--muted));
+}
+
+/* Server error box above a form */
+.form-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.625rem;
+  padding: 0.75rem 0.875rem;
+  border: 1px solid rgb(var(--bad) / 0.3);
+  border-radius: var(--radius);
+  background: rgb(var(--bad-soft));
+  color: rgb(var(--bad));
+  font-size: 0.875rem;
+}

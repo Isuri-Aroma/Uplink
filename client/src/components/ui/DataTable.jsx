@@ -4,11 +4,11 @@ import EmptyState from './EmptyState';
 export default function DataTable({ columns, rows, loading, empty, onRowClick, rowKey = '_id' }) {
   if (loading) {
     return (
-      <div className="card divide-y divide-line" aria-busy="true">
+      <div className="card skeleton-rows" aria-busy="true">
         {[1, 2, 3, 4].map((i) => (
-          <div key={i} className="flex gap-4 p-4">
-            <div className="h-4 w-1/4 animate-pulse rounded bg-line" />
-            <div className="h-4 w-1/3 animate-pulse rounded bg-line" />
+          <div key={i}>
+            <span style={{ width: '25%' }} />
+            <span style={{ width: '33%' }} />
           </div>
         ))}
       </div>
@@ -17,31 +17,24 @@ export default function DataTable({ columns, rows, loading, empty, onRowClick, r
   if (!rows.length) return <EmptyState {...empty} />;
 
   const click = (row) => onRowClick && onRowClick(row);
+  const cell = (c, row) => (c.render ? c.render(row) : row[c.key]);
 
   return (
     <>
-      <div className="card hidden overflow-x-auto md:block">
-        <table className="w-full text-sm">
+      <div className={`card data-table ${onRowClick ? 'data-table--clickable' : ''}`}>
+        <table>
           <thead>
-            <tr className="border-b border-line text-left">
+            <tr>
               {columns.map((c) => (
-                <th key={c.key} className={`px-4 py-3 text-xs font-bold uppercase tracking-wide text-muted ${c.align === 'right' ? 'text-right' : ''}`}>
-                  {c.header}
-                </th>
+                <th key={c.key} className={c.align === 'right' ? 'align-right' : undefined}>{c.header}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {rows.map((row) => (
-              <tr
-                key={row[rowKey]}
-                onClick={() => click(row)}
-                className={`border-b border-line last:border-0 ${onRowClick ? 'cursor-pointer hover:bg-primary-soft/40' : ''}`}
-              >
+              <tr key={row[rowKey]} onClick={() => click(row)}>
                 {columns.map((c) => (
-                  <td key={c.key} className={`px-4 py-3 align-middle ${c.align === 'right' ? 'text-right' : ''} ${c.className || ''}`}>
-                    {c.render ? c.render(row) : row[c.key]}
-                  </td>
+                  <td key={c.key} className={c.align === 'right' ? 'align-right' : undefined}>{cell(c, row)}</td>
                 ))}
               </tr>
             ))}
@@ -49,17 +42,14 @@ export default function DataTable({ columns, rows, loading, empty, onRowClick, r
         </table>
       </div>
 
-      <ul className="flex flex-col gap-3 md:hidden">
+      <ul className="data-cards">
         {rows.map((row) => (
           <li key={row[rowKey]}>
-            <div
-              onClick={() => click(row)}
-              className={`card flex flex-col gap-2 p-4 ${onRowClick ? 'cursor-pointer active:bg-primary-soft/40' : ''}`}
-            >
+            <div onClick={() => click(row)} className="card data-card">
               {columns.map((c) => (
-                <div key={c.key} className="flex items-center justify-between gap-4 text-sm">
-                  <span className="text-xs font-bold uppercase tracking-wide text-muted">{c.header}</span>
-                  <span className="text-right">{c.render ? c.render(row) : row[c.key]}</span>
+                <div key={c.key} className="data-card__row">
+                  <span className="data-card__label">{c.header}</span>
+                  <span className="data-card__value">{cell(c, row)}</span>
                 </div>
               ))}
             </div>

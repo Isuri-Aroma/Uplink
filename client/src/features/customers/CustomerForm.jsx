@@ -75,9 +75,7 @@ export default function CustomerForm({ customer, errors, onChangeErrors, onSubmi
           {CUSTOMER_TYPES.map((t) => (
             <label
               key={t}
-              className={`flex h-10 cursor-pointer items-center justify-center rounded-lg border text-sm font-semibold ${
-                form.customerType === t ? 'border-primary bg-primary-soft text-primary' : 'border-line text-muted hover:text-ink'
-              }`}
+              className={`choice ${form.customerType === t ? 'choice--on' : ''}`}
             >
               <input type="radio" name="customerType" value={t} checked={form.customerType === t} onChange={set('customerType')} className="sr-only" />
               {t}

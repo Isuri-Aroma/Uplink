@@ -1,0 +1,165 @@
+/* Shared chart text and lines */
+.chart-axis {
+  fill: rgb(var(--muted));
+  font-size: 10px;
+}
+.chart-axis--mono {
+  font-family: var(--font-mono);
+}
+.chart-grid {
+  stroke: rgb(var(--line));
+}
+.chart-line {
+  fill: none;
+  stroke: rgb(var(--primary));
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.chart-area {
+  fill: rgb(var(--primary) / 0.1);
+}
+.chart-point {
+  fill: rgb(var(--primary));
+  stroke: rgb(var(--surface));
+  stroke-width: 2;
+}
+.chart-crosshair {
+  stroke: rgb(var(--muted));
+  stroke-dasharray: 3 3;
+}
+.chart-tip {
+  position: absolute;
+  pointer-events: none;
+  transform: translate(-50%, -100%);
+  white-space: nowrap;
+  padding: 0.375rem 0.625rem;
+  border: 1px solid rgb(var(--line));
+  border-radius: var(--radius);
+  background: rgb(var(--surface));
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  font-size: 0.75rem;
+}
+.chart-tip strong {
+  margin-left: 0.5rem;
+  font-family: var(--font-mono);
+}
+.chart-tip span {
+  color: rgb(var(--muted));
+}
+
+/* Donut */
+.donut {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+}
+.donut svg {
+  flex-shrink: 0;
+  width: 11rem;
+  height: 11rem;
+}
+.donut__track {
+  stroke: rgb(var(--line) / 0.6);
+}
+.donut__segment {
+  cursor: pointer;
+  transition: stroke-width 0.15s;
+}
+.donut__value {
+  fill: rgb(var(--ink));
+  font-family: var(--font-mono);
+  font-size: 30px;
+  font-weight: 700;
+}
+.donut__caption {
+  fill: rgb(var(--muted));
+  font-size: 11px;
+}
+.legend {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 9rem;
+  font-size: 0.875rem;
+}
+.legend__row {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0 0.25rem;
+  border-radius: 0.375rem;
+}
+.legend__row--active {
+  background: rgb(var(--primary-soft) / 0.6);
+}
+.legend__swatch {
+  flex-shrink: 0;
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: 2px;
+}
+.legend__label {
+  flex: 1;
+}
+.legend__value {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.legend__pct {
+  width: 2.5rem;
+  text-align: right;
+  font-size: 0.75rem;
+  color: rgb(var(--muted));
+  font-variant-numeric: tabular-nums;
+}
+
+/* Ranked bars */
+.bar-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+.bar-list__row {
+  display: grid;
+  grid-template-columns: minmax(0, 9rem) 1fr 2rem;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.875rem;
+}
+.bar-list__name {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+}
+.bar-list__sub {
+  display: block;
+  font-size: 0.75rem;
+  color: rgb(var(--muted));
+}
+.bar-list__track {
+  height: 0.625rem;
+  border-radius: 2px;
+  background: rgb(var(--bg));
+}
+.bar-list__fill {
+  display: block;
+  height: 100%;
+  border-radius: 0 2px 2px 0;
+  background: rgb(var(--primary));
+  transition: opacity 0.15s;
+}
+.bar-list__row:hover .bar-list__fill {
+  opacity: 0.8;
+}
+.bar-list__value {
+  text-align: right;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}

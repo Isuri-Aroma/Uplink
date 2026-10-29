@@ -3,8 +3,6 @@ import { PRIORITY_TONE, TICKET_TONE } from '../../utils/status';
 import { place } from '../../utils/format';
 import { age } from '../../utils/time';
 
-const STRIPE = { Critical: 'bg-bad', High: 'bg-warn', Medium: 'bg-primary', Low: 'bg-off' };
-
 const initials = (name = '') => name.split(' ').map((w) => w[0]).join('').slice(0, 2).toUpperCase();
 
 export default function TicketCard({ ticket: t, onOpen }) {
@@ -16,7 +14,7 @@ export default function TicketCard({ ticket: t, onOpen }) {
       onClick={() => onOpen(t)}
       className="card grid w-full grid-cols-[6px_1fr] overflow-hidden text-left transition-colors hover:border-primary sm:grid-cols-[6px_1fr_auto]"
     >
-      <span className={STRIPE[t.priority]} aria-hidden="true" />
+      <span className={`stripe--${t.priority}`} aria-hidden="true" />
 
       <div className="flex min-w-0 flex-col gap-1.5 px-4 py-3.5">
         <div className="flex flex-wrap items-center gap-2">
@@ -37,7 +35,7 @@ export default function TicketCard({ ticket: t, onOpen }) {
         </p>
         <div className="flex items-center gap-2">
           <span className="flex items-center gap-1.5 text-xs">
-            <span className="grid h-6 w-6 place-items-center rounded-full bg-primary-soft text-[10px] font-bold text-primary">
+            <span className="avatar h-6 w-6 text-[10px]">
               {t.assignedTo ? initials(t.assignedTo.name) : '—'}
             </span>
             {t.assignedTo ? t.assignedTo.name.split(' ')[0] : 'Unassigned'}

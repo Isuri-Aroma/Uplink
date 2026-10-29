@@ -10,21 +10,19 @@ export default function Topbar({ onMenu }) {
   const { user, signOut } = useAuth();
 
   return (
-    <header className="sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-line bg-bg/90 px-4 backdrop-blur sm:px-6">
-      <button className="rounded-lg p-2 text-muted hover:bg-primary-soft lg:hidden" onClick={onMenu} aria-label="Open menu">
+    <header className="topbar">
+      <button className="menu-btn" onClick={onMenu} aria-label="Open menu">
         <Menu size={20} />
       </button>
-      <Logo className="lg:hidden" />
+      <Logo className="topbar__logo" />
 
-      <div className="ml-auto flex items-center gap-2">
+      <div className="topbar__actions">
         <ThemeToggle />
-        <div className="hidden items-center gap-2.5 border-l border-line pl-3 sm:flex">
-          <span className="grid h-9 w-9 place-items-center rounded-full bg-primary-soft text-xs font-bold text-primary">
-            {initials(user?.name)}
-          </span>
-          <div className="leading-tight">
-            <p className="text-sm font-semibold">{user?.name}</p>
-            <p className="text-xs capitalize text-muted">{user?.role}</p>
+        <div className="topbar__user">
+          <span className="avatar">{initials(user?.name)}</span>
+          <div>
+            <p className="topbar__name">{user?.name}</p>
+            <p className="topbar__role">{user?.role}</p>
           </div>
         </div>
         <button onClick={signOut} className="btn-ghost px-3" title="Sign out">
