@@ -1,8 +1,6 @@
 # Uplink
 
-Uplink is an internal broadband management system for the staff of an internet service provider. Staff register customers, manage broadband plans, take new connection orders and track faults until they are fixed. It uses Sri Lankan data: NIC numbers, mobile numbers, districts and fees in LKR.
-
-Built with MongoDB, Express, React and Node.js.
+Uplink is an internal broadband management system for the staff of an internet service provider. Staff register customers, manage broadband plans, take new connection orders and track faults until they are fixed.
 
 ![Uplink dashboard](docs/screenshots/03-dashboard.png)
 
@@ -17,6 +15,13 @@ Built with MongoDB, Express, React and Node.js.
 - **Dashboard:** key figures and simple bar charts.
 - **Lists:** search, filter and sort on each list page.
 - **Safe delete:** records that are still in use cannot be deleted, and every delete asks for confirmation.
+
+## Tech stack
+
+- **Front end:** React, Vite, Tailwind CSS
+- **Back end:** Node.js, Express
+- **Database:** MongoDB 
+
 
 ## Getting started
 
@@ -54,10 +59,19 @@ Open http://localhost:5173.
 
 ## Demo accounts
 
-| Role | Email | Password |
-|---|---|---|
-| Admin | `admin@uplink.lk` | `Admin@1234` |
-| Agent | `supun@uplink.lk` | `Agent@1234` |
+- **Admin:** `admin@uplink.lk` / `Admin@1234`
+- **Agent:** `supun@uplink.lk` / `Agent@1234`
+
+## Roles
+
+- **Admin:** full access, including plans, deletes and staff accounts.
+- **Agent:** manages customers, subscriptions and tickets, and can view plans.
+
+## Project structure
+
+- `client/`: React front end
+- `server/`: Express API and MongoDB models
+- `docs/`: ERD and screenshots
 
 ## Database design
 
