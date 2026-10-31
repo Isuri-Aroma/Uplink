@@ -9,7 +9,7 @@ export const userRules = (isUpdate = false) => {
 
   return [
     field('name', 'Name').trim().isLength({ min: 3, max: 60 }).withMessage('Name must be 3 to 60 characters'),
-    field('email', 'Email').trim().isEmail().withMessage('Enter a valid email address').normalizeEmail(),
+    field('email', 'Email').trim().isEmail().withMessage('Enter a valid email address'),
     field('password', 'Password')
       .isLength({ min: 8 }).withMessage('Password must be at least 8 characters')
       .matches(/[A-Za-z]/).withMessage('Password must contain a letter')

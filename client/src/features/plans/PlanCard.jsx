@@ -40,7 +40,7 @@ export default function PlanCard({ plan, canEdit, onOpen, onEdit, onDelete }) {
         <span>{plan.subscriberCount} subscribers</span>
       </div>
 
-      <div className="flex items-center justify-between gap-2">
+      <div className="flex flex-wrap items-center justify-between gap-2">
         <p className="text-lg font-extrabold tabular-nums">
           {lkr(plan.monthlyFeeLKR)} <span className="text-xs font-semibold text-muted">/ month</span>
         </p>

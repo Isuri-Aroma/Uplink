@@ -10,11 +10,13 @@ import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import dashboardRoutes from './routes/dashboardRoutes.js';
 import { protect } from './middleware/auth.js';
+import { plainQuery } from './middleware/validate.js';
 
 const app = express();
 
 app.use(cors({ origin: process.env.CLIENT_URL || 'http://localhost:5173' }));
 app.use(express.json());
+app.use(plainQuery);
 
 // Health check
 app.get('/api/health', (req, res) => {

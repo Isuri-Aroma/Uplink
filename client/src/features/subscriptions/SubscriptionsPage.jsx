@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ChevronRight, Plus } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { listSubscriptions, STATUSES } from '../../api/subscriptions';
@@ -34,7 +34,10 @@ export default function SubscriptionsPage() {
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
   const [status, setStatus] = useState('');
-  const [search, setSearch] = useState('');
+  // Search lives in the URL so Back keeps it
+  const [params, setParams] = useSearchParams();
+  const search = params.get('q') || '';
+  const setSearch = (value) => setParams(value ? { q: value } : {}, { replace: true });
   const [plan, setPlan] = useState('');
   const [district, setDistrict] = useState('');
   const [sort, setSort] = useState('newest');

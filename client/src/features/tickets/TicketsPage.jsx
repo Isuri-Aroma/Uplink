@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Plus } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { CATEGORIES, listTickets, PRIORITIES } from '../../api/tickets';
@@ -24,7 +24,10 @@ export default function TicketsPage() {
   const [counts, setCounts] = useState({});
   const [loading, setLoading] = useState(true);
   const [view, setView] = useState('queue');
-  const [search, setSearch] = useState('');
+  // Search lives in the URL so Back keeps it
+  const [params, setParams] = useSearchParams();
+  const search = params.get('q') || '';
+  const setSearch = (value) => setParams(value ? { q: value } : {}, { replace: true });
   const [priority, setPriority] = useState('');
   const [category, setCategory] = useState('');
   const [assignedTo, setAssignedTo] = useState('');

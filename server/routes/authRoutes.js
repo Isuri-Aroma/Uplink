@@ -8,8 +8,10 @@ const router = Router();
 
 router.post(
   '/login',
-  body('email').trim().isEmail().withMessage('Enter a valid email address'),
-  body('password').notEmpty().withMessage('Enter your password'),
+  body('email').isString().withMessage('Enter a valid email address').bail()
+    .trim().isEmail().withMessage('Enter a valid email address'),
+  body('password').isString().withMessage('Enter your password').bail()
+    .notEmpty().withMessage('Enter your password'),
   validate,
   login
 );

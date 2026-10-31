@@ -11,7 +11,7 @@ const EMPTY = {
 
 const toForm = (c) => (c ? { ...EMPTY, ...c, email: c.email || '', address: { ...c.address } } : EMPTY);
 
-const INITIALS = /^(?:[A-Z]\.\s?)+[A-Z][A-Za-z'-]+(?:\s[A-Z][A-Za-z'-]+)*$/;
+const INITIALS = /^(?:[A-Z]\.\s?)+(?:de\s)?[A-Z][A-Za-z'-]+(?:\s[A-Z][A-Za-z'-]+)*$/;
 
 // Same rules as the server
 export function validateCustomer(f) {

@@ -74,7 +74,9 @@ export const updateCustomer = asyncHandler(async (req, res) => {
   if (!customer) throw new ApiError(404, 'Customer not found');
 
   if (req.body.nic) await ensureNicIsFree(req.body.nic, customer._id);
-  customer.set(req.body);
+  // nicNormalized always comes from the NIC
+  const { nicNormalized, ...fields } = req.body;
+  customer.set(fields);
   await customer.save();
   res.json(customer);
 });
@@ -87,7 +89,7 @@ export const deleteCustomer = asyncHandler(async (req, res) => {
   // Block delete if they have subscriptions
   const count = await Subscription.countDocuments({ customer: customer._id });
   if (count > 0) {
-    throw new ApiError(409, `${customer.nameWithInitials} has ${count} subscription(s). Delete or reassign them first.`);
+    throw new ApiError(409, `${customer.nameWithInitials} has ${count} subscription(s). Delete them first.`);
   }
   await customer.deleteOne();
   res.json({ message: `Customer ${customer.nameWithInitials} deleted` });

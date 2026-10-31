@@ -41,6 +41,7 @@ const subscriptionSchema = new mongoose.Schema(
       uppercase: true,
       unique: true,
       sparse: true, // many subscriptions can have no router yet
+      set: (value) => value || undefined, // blank means no router
       match: [/^[A-Z0-9-]{6,30}$/, 'Router serial must be 6-30 letters, numbers or dashes'],
     },
     usedGB: { type: Number, default: 0, min: [0, 'Data used cannot be negative'] },

@@ -120,18 +120,18 @@ export default function PlansPage() {
       <div className="flex flex-wrap items-center gap-2">
         <SearchInput id="plan-search" value={search} onChange={setSearch} placeholder="Search plans by name" />
         <SelectFilter id="plan-tech" label="Technology" value={technology} onChange={setTechnology}
-          options={[{ value: '', label: 'All technologies' }, ...TECHNOLOGIES.map((t) => ({ value: t, label: t }))]} />
+          options={[{ value: '', label: 'All tech' }, ...TECHNOLOGIES.map((t) => ({ value: t, label: t }))]} />
         <SelectFilter id="plan-status" label="Status" value={status} onChange={setStatus}
           options={[{ value: '', label: 'All statuses' }, { value: 'active', label: 'On sale' }, { value: 'inactive', label: 'Inactive' }]} />
         <SelectFilter id="plan-sort" label="Sort" value={sort} onChange={setSort} options={SORT_OPTIONS} />
       </div>
 
       {loading ? (
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3" aria-busy="true">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3" aria-busy="true">
           {[1, 2, 3].map((i) => <div key={i} className="card h-60 animate-pulse" />)}
         </div>
       ) : plans.length ? (
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {plans.map((p) => (
             <PlanCard key={p._id} plan={p} canEdit={isAdmin} onOpen={openForm} onEdit={openForm} onDelete={askDelete} />
           ))}

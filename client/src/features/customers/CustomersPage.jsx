@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Plus } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { CUSTOMER_TYPES, deleteCustomer, DISTRICTS, listCustomers } from '../../api/customers';
@@ -28,7 +28,10 @@ export default function CustomersPage() {
   const navigate = useNavigate();
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState('');
+  // Search lives in the URL so Back keeps it
+  const [params, setParams] = useSearchParams();
+  const search = params.get('q') || '';
+  const setSearch = (value) => setParams(value ? { q: value } : {}, { replace: true });
   const [district, setDistrict] = useState('');
   const [type, setType] = useState('');
   const [sort, setSort] = useState('name');

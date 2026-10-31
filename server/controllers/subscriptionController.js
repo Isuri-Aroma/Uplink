@@ -128,6 +128,22 @@ export const changeStatus = asyncHandler(async (req, res) => {
     );
   }
 
+  // Suspending or terminating needs a reason
+  if (['Suspended', 'Terminated'].includes(status) && !note?.trim()) {
+    throw new ApiError(400, 'Add a reason for this change', [{ field: 'note', message: 'Reason is required' }]);
+  }
+
+  // Open faults must be finished first
+  if (status === 'Terminated') {
+    const openTickets = await Ticket.countDocuments({
+      subscription: subscription._id,
+      status: { $in: ['Open', 'In Progress'] },
+    });
+    if (openTickets > 0) {
+      throw new ApiError(409, `${subscription.accountNo} has ${openTickets} open ticket(s). Resolve them before terminating.`);
+    }
+  }
+
   subscription.status = status;
   subscription.statusHistory.push({ status, note, by: req.user._id });
   if (status === 'Active' && !subscription.installDate) subscription.installDate = new Date();
