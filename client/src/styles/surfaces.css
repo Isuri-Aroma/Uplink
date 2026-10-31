@@ -30,20 +30,6 @@
 .badge--primary { background: rgb(var(--primary-soft)); color: rgb(var(--primary)); }
 .badge--accent { background: rgb(var(--accent) / 0.1); color: rgb(var(--accent)); }
 
-/* Small red count next to menu items and tabs */
-.count-pill {
-  padding: 0 0.5rem;
-  border-radius: 9999px;
-  background: rgb(var(--bad));
-  color: #fff;
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  line-height: 1rem;
-}
-.dark .count-pill {
-  color: rgb(var(--bg));
-}
-
 /* Page title row */
 .page-header {
   display: flex;

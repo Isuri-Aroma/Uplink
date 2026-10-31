@@ -2,7 +2,7 @@ import fibreRack from '../../assets/fibre-rack.jpg';
 import Logo, { LogoMark } from '../Logo';
 import ThemeToggle from '../ThemeToggle';
 
-// Photo panel + content column used by sign-in and request access
+// Photo panel + content column for the sign-in page
 export default function AuthShell({ children, footer }) {
   return (
     <div className="auth-shell">

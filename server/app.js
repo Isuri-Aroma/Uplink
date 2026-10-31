@@ -9,7 +9,6 @@ import ticketRoutes from './routes/ticketRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import dashboardRoutes from './routes/dashboardRoutes.js';
-import accessRequestRoutes from './routes/accessRequestRoutes.js';
 import { protect } from './middleware/auth.js';
 
 const app = express();
@@ -29,7 +28,6 @@ app.get('/api/health', (req, res) => {
 
 // Open routes first, the rest need a token
 app.use('/api/auth', authRoutes);
-app.use('/api/access-requests', accessRequestRoutes);
 app.use('/api/plans', protect, planRoutes);
 app.use('/api/customers', protect, customerRoutes);
 app.use('/api/subscriptions', protect, subscriptionRoutes);

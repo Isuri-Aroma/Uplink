@@ -157,31 +157,6 @@
   font-size: 0.75rem;
 }
 
-/* Underlined page tabs (access control) */
-.underline-tabs {
-  display: flex;
-  gap: 1.5rem;
-  border-bottom: 1px solid rgb(var(--line));
-}
-.underline-tab {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  height: var(--control-height);
-  margin-bottom: -1px;
-  border-bottom: 2px solid transparent;
-  font-size: 0.875rem;
-  font-weight: 700;
-  color: rgb(var(--muted));
-}
-.underline-tab:hover {
-  color: rgb(var(--ink));
-}
-.underline-tab[aria-selected='true'] {
-  border-bottom-color: rgb(var(--primary));
-  color: rgb(var(--ink));
-}
-
 /* FTTH / VDSL / 4G / 5G tile */
 .tech-tile {
   display: grid;

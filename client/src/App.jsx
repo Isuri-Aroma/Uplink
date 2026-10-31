@@ -2,7 +2,6 @@ import { Route, Routes } from 'react-router-dom';
 import { RequireAdmin, RequireAuth } from './components/ProtectedRoute';
 import AppLayout from './components/layout/AppLayout';
 import LoginPage from './pages/LoginPage';
-import RequestAccessPage from './pages/RequestAccessPage';
 import DashboardPage from './pages/DashboardPage';
 import NotFoundPage from './pages/NotFoundPage';
 import PlansPage from './features/plans/PlansPage';
@@ -18,7 +17,6 @@ export default function App() {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
-      <Route path="/request-access" element={<RequestAccessPage />} />
 
       {/* Signed-in pages */}
       <Route element={<RequireAuth />}>

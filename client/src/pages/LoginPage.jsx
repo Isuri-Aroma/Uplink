@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { AlertCircle, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { readError } from '../api/client';
@@ -114,11 +114,6 @@ export default function LoginPage() {
           {busy ? 'Signing in…' : 'Sign in'}
         </button>
       </form>
-
-      <p className="mt-6 border-t border-line pt-6 text-center text-sm text-muted">
-        New staff member?{' '}
-        <Link to="/request-access" className="font-semibold text-primary hover:underline">Request access</Link>
-      </p>
     </AuthShell>
   );
 }

@@ -1,25 +1,12 @@
-import { useEffect, useState } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { X } from 'lucide-react';
 import Logo from '../Logo';
 import { NAV_ITEMS } from './navItems';
 import { useAuth } from '../../context/AuthContext';
-import { listAccessRequests } from '../../api/accessRequests';
 
 export default function Sidebar({ open, onClose }) {
   const { isAdmin } = useAuth();
-  const { pathname } = useLocation();
-  const [pending, setPending] = useState(0);
   const items = NAV_ITEMS.filter((item) => !item.adminOnly || isAdmin);
-
-  // Pending access requests badge (admins only)
-  useEffect(() => {
-    if (!isAdmin) return;
-    const check = () => listAccessRequests({ status: 'Pending' }).then((d) => setPending(d.counts.Pending || 0)).catch(() => {});
-    check();
-    window.addEventListener('uplink:requests-changed', check);
-    return () => window.removeEventListener('uplink:requests-changed', check);
-  }, [isAdmin, pathname]);
 
   return (
     <>
@@ -38,9 +25,6 @@ export default function Sidebar({ open, onClose }) {
             <NavLink key={to} to={to} end={end} onClick={onClose} className="nav-link">
               <Icon size={18} />
               <span className="nav-link__label">{label}</span>
-              {to === '/staff' && pending > 0 && (
-                <span className="count-pill" title={`${pending} access requests waiting`}>{pending}</span>
-              )}
             </NavLink>
           ))}
         </nav>

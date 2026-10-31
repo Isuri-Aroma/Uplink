@@ -1,5 +1,4 @@
 import User from '../models/User.js';
-import AccessRequest from '../models/AccessRequest.js';
 import { signToken } from '../middleware/auth.js';
 import { ApiError } from '../utils/ApiError.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
@@ -8,19 +7,6 @@ import { asyncHandler } from '../utils/asyncHandler.js';
 export const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email: email.toLowerCase() }).select('+password');
-
-  // Explain a pending or rejected request
-  if (!user) {
-    const request = await AccessRequest.findOne({ email: email.toLowerCase() }).sort({ createdAt: -1 }).select('+password');
-    if (request && request.status !== 'Approved' && (await request.checkPassword(password))) {
-      throw new ApiError(
-        403,
-        request.status === 'Pending'
-          ? 'Your access request is waiting for admin approval'
-          : `Your access request was declined: ${request.rejectReason}. Contact your admin.`
-      );
-    }
-  }
 
   // Same message for wrong email or password
   if (!user || !(await user.checkPassword(password))) {

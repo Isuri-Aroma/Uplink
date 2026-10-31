@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, FileDown, Pencil, Trash2 } from 'lucide-react';
+import { ArrowLeft, Pencil, Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { changeTicketStatus, deleteTicket, getTicket, TICKET_ACTIONS } from '../../api/tickets';
 import { readError } from '../../api/client';
@@ -121,9 +121,6 @@ export default function TicketDetailsPage() {
           {TICKET_ACTIONS[t.status].map((a) => (
             <button key={a.label} className={ACTION_BUTTON[a.tone]} onClick={() => { setActionError(''); setAction(a); }}>{a.label}</button>
           ))}
-          <button className="btn-outline" onClick={() => import('./jobCardPdf').then((m) => m.downloadJobCard(t))}>
-            <FileDown size={16} /> Job card PDF
-          </button>
           {!closed && (
             <button className="btn-outline" onClick={() => setEditing({ ticket: t })}>
               <Pencil size={16} /> Edit
