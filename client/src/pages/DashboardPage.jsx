@@ -11,6 +11,8 @@ import { age } from '../utils/time';
 import StatCard from '../components/ui/StatCard';
 import Badge from '../components/ui/Badge';
 import BarList from '../components/charts/BarList';
+import ColumnChart from '../components/charts/ColumnChart';
+import StatusBar from '../components/charts/StatusBar';
 import SubscriptionDrawer from '../features/subscriptions/SubscriptionDrawer';
 import TicketDrawer from '../features/tickets/TicketDrawer';
 
@@ -95,19 +97,22 @@ export default function DashboardPage() {
             />
           </div>
 
-          <div className="grid gap-4 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
             <Panel title="New connections per month" link={{ to: '/subscriptions', label: 'Subscriptions' }} className="lg:col-span-2">
-              <BarList
+              <ColumnChart
                 unit="new orders"
-                items={d.months.map((m) => ({
-                  label: new Date(`${m.month}-01T00:00:00`).toLocaleDateString('en-GB', { month: 'short', year: 'numeric' }),
-                  value: m.total,
-                }))}
+                items={d.months.map((m) => {
+                  const date = new Date(`${m.month}-01T00:00:00`);
+                  return {
+                    label: date.toLocaleDateString('en-GB', { month: 'short' }).slice(0, 3),
+                    title: date.toLocaleDateString('en-GB', { month: 'short', year: 'numeric' }),
+                    value: m.total,
+                  };
+                })}
               />
             </Panel>
             <Panel title="Subscriptions by status">
-              <BarList
-                unit="subscriptions"
+              <StatusBar
                 items={[
                   { label: 'Active', value: s.Active || 0, color: 'rgb(var(--ok))' },
                   { label: 'Pending', value: s.Pending || 0, color: 'rgb(var(--warn))' },
@@ -118,7 +123,7 @@ export default function DashboardPage() {
             </Panel>
           </div>
 
-          <div className="grid gap-4 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
             <Panel title="Most popular plans" link={{ to: '/plans', label: 'Catalogue' }}>
               <BarList unit="subscribers" items={d.topPlans.map((p) => ({ label: p.name, sub: p.technology, value: p.total }))} />
             </Panel>

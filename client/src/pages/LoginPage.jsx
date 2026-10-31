@@ -55,7 +55,7 @@ export default function LoginPage() {
   return (
     <AuthShell footer="For authorised Uplink staff only. Forgot your password? Ask your admin to reset it.">
       <h1 className="auth-title">Staff sign in</h1>
-      <p className="auth-text">Welcome back. Enter your work email and password to continue.</p>
+      <p className="auth-text">Enter your work email and password.</p>
 
       {serverError && (
         <div role="alert" className="form-alert mt-6">

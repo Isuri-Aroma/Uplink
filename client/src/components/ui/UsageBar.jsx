@@ -8,7 +8,7 @@ export default function UsageBar({ used = 0, cap = 0, large = false, installed =
   return (
     <div className={`usage ${large ? 'usage--large' : ''} ${high ? 'usage--high' : ''}`}>
       <div className="usage__track">
-        {cap > 0 && <div className="usage__fill" style={{ width: `${pct}%` }} />}
+        {cap > 0 ? <div className="usage__fill" style={{ width: `${pct}%` }} /> : <div className="usage__fill usage__fill--unlimited" />}
       </div>
       <span className="usage__text">{cap ? `${used} of ${cap} GB · ${pct}%` : `${used} GB used · unlimited`}</span>
     </div>

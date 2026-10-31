@@ -1,4 +1,4 @@
-// Horizontal bars, each item can set its own colour
+// Ranked horizontal bars, one colour
 export default function BarList({ items, unit = '' }) {
   const max = Math.max(1, ...items.map((i) => i.value));
   return (
@@ -10,7 +10,7 @@ export default function BarList({ items, unit = '' }) {
             {item.sub && <span className="bar-list__sub">{item.sub}</span>}
           </span>
           <span className="bar-list__track">
-            <span className="bar-list__fill" style={{ width: `${(item.value / max) * 100}%`, background: item.color }} />
+            <span className="bar-list__fill" style={{ width: `${(item.value / max) * 100}%` }} />
           </span>
           <span className="bar-list__value">{item.value}</span>
         </li>

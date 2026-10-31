@@ -199,6 +199,11 @@
 .usage--high .usage__fill {
   background: rgb(var(--warn));
 }
+/* Unlimited plans: full bar in light teal */
+.usage__fill--unlimited {
+  width: 100%;
+  background: rgb(var(--accent) / 0.35);
+}
 .usage__text {
   font-size: 0.75rem;
   color: rgb(var(--muted));

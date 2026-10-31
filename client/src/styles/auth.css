@@ -1,4 +1,4 @@
-/* Sign-in and request access: photo left, form right */
+/* Sign-in page: photo left, form right */
 .auth-shell {
   display: grid;
   min-height: 100vh;
@@ -40,10 +40,31 @@
 .auth-photo__name span {
   color: #4da3ff;
 }
-.auth-photo__line {
-  margin-top: 0.75rem;
-  font-size: 0.875rem;
-  font-weight: 500;
+/* Dark fade so the headline stays readable */
+.auth-photo__fade-bottom {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 62%;
+  background: linear-gradient(to top, rgb(7 22 29 / 0.97), rgb(7 22 29 / 0.82) 45%, transparent);
+}
+.auth-photo__hero {
+  position: absolute;
+  left: 3rem;
+  right: 3rem;
+  bottom: 3rem;
+}
+.auth-photo__hero h2 {
+  font-size: 3rem;
+  line-height: 1.08;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: #fff;
+}
+.auth-photo__hero p {
+  margin-top: 0.875rem;
+  font-size: 1rem;
   color: #c9dce4;
 }
 .auth-panel {
@@ -58,9 +79,13 @@
 }
 .auth-panel__body {
   width: 100%;
-  max-width: 24rem;
+  max-width: 26rem;
   margin: auto;
-  padding: 2.5rem 0;
+  padding: 2rem;
+  border: 1px solid rgb(var(--line));
+  border-radius: 1rem;
+  background: rgb(var(--surface));
+  box-shadow: 0 16px 40px -20px rgb(12 34 48 / 0.25);
 }
 .auth-panel__foot {
   text-align: center;
@@ -68,8 +93,8 @@
   color: rgb(var(--muted));
 }
 .auth-title {
-  font-size: 1.5rem;
-  line-height: 2rem;
+  font-size: 1.75rem;
+  line-height: 2.25rem;
   font-weight: 800;
   letter-spacing: -0.025em;
 }

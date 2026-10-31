@@ -44,3 +44,84 @@
   font-weight: 600;
   font-variant-numeric: tabular-nums;
 }
+
+/* Upright bars */
+.column-chart {
+  display: flex;
+  gap: 0.375rem;
+  padding-top: 1.25rem;
+}
+.column-chart__item {
+  flex: 1;
+  min-width: 0;
+  text-align: center;
+}
+.column-chart__track {
+  display: flex;
+  align-items: flex-end;
+  height: 11rem;
+  border-bottom: 1px solid rgb(var(--line));
+}
+.column-chart__bar {
+  position: relative;
+  width: 100%;
+  min-height: 2px;
+  border-radius: 3px 3px 0 0;
+  background: rgb(var(--primary));
+}
+.column-chart__value {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  right: 0;
+  padding-bottom: 0.125rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.column-chart__label {
+  display: block;
+  margin-top: 0.375rem;
+  font-size: 0.6875rem;
+  color: rgb(var(--muted));
+}
+/* Phones show every second month */
+@media (max-width: 480px) {
+  .column-chart__item:nth-child(even) .column-chart__label {
+    visibility: hidden;
+  }
+}
+
+/* Status share bar */
+.status-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+.status-bar__track {
+  display: flex;
+  gap: 2px;
+  height: 0.875rem;
+  overflow: hidden;
+  border-radius: 4px;
+}
+.status-bar__list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  font-size: 0.875rem;
+}
+.status-bar__row {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+.status-bar__dot {
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: 2px;
+}
+.status-bar__value {
+  font-family: var(--font-mono);
+  font-weight: 600;
+}
