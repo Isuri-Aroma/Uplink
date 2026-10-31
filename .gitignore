@@ -16,9 +16,6 @@ dist/
 *.log
 npm-debug.log*
 
-# Private assistant notes (never commit)
-CLAUDE.md
-
 # Personal files not part of the submission
 notes.txt
 *.pdf
