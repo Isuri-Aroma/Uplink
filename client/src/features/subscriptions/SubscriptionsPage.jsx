@@ -96,7 +96,7 @@ export default function SubscriptionsPage() {
       </div>
 
       <div className="flex flex-wrap items-center gap-2">
-        <SearchInput id="sub-search" value={search} onChange={setSearch} placeholder="Subscription, router, name, NIC or mobile" />
+        <SearchInput id="sub-search" value={search} onChange={setSearch} placeholder="Subscription, router, name or NIC" />
         <SelectFilter id="sub-plan-filter" label="Plan" value={plan} onChange={setPlan}
           options={[{ value: '', label: 'All plans' }, ...plans.map((p) => ({ value: p._id, label: p.name }))]} />
         <SelectFilter id="sub-district-filter" label="District" value={district} onChange={setDistrict}
