@@ -10,8 +10,6 @@ import { PRIORITY_TONE, TICKET_TONE } from '../utils/status';
 import { age } from '../utils/time';
 import StatCard from '../components/ui/StatCard';
 import Badge from '../components/ui/Badge';
-import AreaChart from '../components/charts/AreaChart';
-import DonutChart from '../components/charts/DonutChart';
 import BarList from '../components/charts/BarList';
 import SubscriptionDrawer from '../features/subscriptions/SubscriptionDrawer';
 import TicketDrawer from '../features/tickets/TicketDrawer';
@@ -62,7 +60,7 @@ export default function DashboardPage() {
           <h1 className="text-2xl font-extrabold tracking-tight">{greeting()}, {user?.name.split(' ')[0]}</h1>
           <p className="mt-1 text-sm text-muted">{today}</p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <button className="btn-outline" onClick={() => setNewTicket({})}>
             <LifeBuoy size={16} /> Log a fault
           </button>
@@ -99,23 +97,18 @@ export default function DashboardPage() {
 
           <div className="grid gap-4 lg:grid-cols-3">
             <Panel title="New connections per month" link={{ to: '/subscriptions', label: 'Subscriptions' }} className="lg:col-span-2">
-              <AreaChart
-                height={300}
-                valueLabel="new orders"
-                data={d.months.map((m) => {
-                  const date = new Date(`${m.month}-01T00:00:00`);
-                  return {
-                    label: date.toLocaleDateString('en-GB', { month: 'short' }),
-                    full: date.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' }),
-                    value: m.total,
-                  };
-                })}
+              <BarList
+                unit="new orders"
+                items={d.months.map((m) => ({
+                  label: new Date(`${m.month}-01T00:00:00`).toLocaleDateString('en-GB', { month: 'short', year: 'numeric' }),
+                  value: m.total,
+                }))}
               />
             </Panel>
             <Panel title="Subscriptions by status">
-              <DonutChart
-                centerLabel={{ value: s.Active || 0, text: 'live now' }}
-                segments={[
+              <BarList
+                unit="subscriptions"
+                items={[
                   { label: 'Active', value: s.Active || 0, color: 'rgb(var(--ok))' },
                   { label: 'Pending', value: s.Pending || 0, color: 'rgb(var(--warn))' },
                   { label: 'Suspended', value: s.Suspended || 0, color: 'rgb(var(--bad))' },
