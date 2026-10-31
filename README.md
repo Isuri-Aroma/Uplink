@@ -4,7 +4,7 @@ Uplink is an internal broadband management system for the back office of an inte
 
 It models the CRM, product catalogue, order management and trouble ticketing parts of a telecom business support system (BSS), using Sri Lankan data: NIC numbers, mobile numbers, districts and fees in LKR.
 
-Built with the MERN stack (MongoDB, Express, React, Node.js) for the EC4307 Web Application Development mini project.
+Built with the MERN stack (MongoDB, Express, React, Node.js) for the Web Application Development mini project.
 
 ![Uplink dashboard](docs/screenshots/03-dashboard.png)
 
