@@ -17,6 +17,9 @@ export function readNic(input) {
   const ref = new Date(Date.UTC(2000, 0, day));
   const dob = new Date(Date.UTC(year, ref.getUTCMonth(), ref.getUTCDate()));
 
+  // 29 Feb only exists in a leap year
+  if (dob.getUTCMonth() !== ref.getUTCMonth()) return null;
+
   const now = new Date();
   let age = now.getFullYear() - year;
   if (now.getMonth() < dob.getUTCMonth() || (now.getMonth() === dob.getUTCMonth() && now.getDate() < dob.getUTCDate())) age -= 1;

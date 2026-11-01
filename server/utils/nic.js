@@ -28,6 +28,9 @@ export function parseNic(input) {
   const ref = new Date(Date.UTC(2000, 0, day));
   const dateOfBirth = new Date(Date.UTC(year, ref.getUTCMonth(), ref.getUTCDate()));
 
+  // 29 Feb only exists in a leap year
+  if (dateOfBirth.getUTCMonth() !== ref.getUTCMonth()) return null;
+
   return {
     nic,
     normalized: `${year}${String(m[2]).padStart(3, '0')}${serial}${check}`,
