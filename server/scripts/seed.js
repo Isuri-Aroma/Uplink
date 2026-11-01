@@ -18,7 +18,7 @@ const daysAgo = (d, hour = 10) => {
 const hoursAfter = (date, h) => new Date(date.getTime() + h * 60 * 60 * 1000);
 
 const staff = [
-  { name: 'Nadeeka Wickramasinghe', email: 'admin@uplink.lk', password: 'Admin@1234', role: 'admin' },
+  { name: 'Isuri Gunaratne', email: 'admin@uplink.lk', password: 'Admin@1234', role: 'admin' },
   { name: 'Supun Jayawardena', email: 'supun@uplink.lk', password: 'Agent@1234', role: 'agent' },
   { name: 'Tharushi Fernando', email: 'tharushi@uplink.lk', password: 'Agent@1234', role: 'agent' },
   { name: 'Kasun Rajapaksha', email: 'kasun@uplink.lk', password: 'Agent@1234', role: 'agent', isActive: false },
