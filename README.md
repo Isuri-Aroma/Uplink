@@ -2,7 +2,7 @@
 
 Uplink is an internal broadband management system for the staff of an internet service provider. Staff register customers, manage broadband plans, take new connection orders and track faults until they are fixed.
 
-![Uplink dashboard](docs/screenshots/03-dashboard.png)
+![Uplink sign in](docs/screenshots/01-sign-in.png)
 
 ## Features
 
@@ -150,7 +150,7 @@ A `counters` collection holds the last account and ticket number. Each collectio
 
 | | |
 |---|---|
-| ![Sign in](docs/screenshots/01-sign-in.png) Sign in | ![Customer accounts](docs/screenshots/04-customer-accounts.png) Customer accounts |
+| ![Dashboard](docs/screenshots/03-dashboard.png) Dashboard | ![Customer accounts](docs/screenshots/04-customer-accounts.png) Customer accounts |
 | ![Product catalogue](docs/screenshots/06-product-catalogue.png) Product catalogue | ![Edit plan](docs/screenshots/07-plan-form.png) Edit plan |
 | ![Subscriptions](docs/screenshots/08-subscriptions.png) Subscriptions | ![Subscription details](docs/screenshots/09-subscription-details.png) Subscription details |
 | ![Trouble tickets](docs/screenshots/10-trouble-tickets.png) Trouble tickets | ![Access control](docs/screenshots/12-access-control.png) Access control |
