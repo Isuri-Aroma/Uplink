@@ -45,8 +45,9 @@ export default function TicketForm({ ticket, subscriptionId, errors, onChangeErr
     }
   }, [isEdit]);
 
-  const set = (key) => (e) => {
-    setForm({ ...form, [key]: e.target.value });
+  // Save a typed value and clear its error
+  const update = (key, value) => {
+    setForm({ ...form, [key]: value });
     if (errors[key]) onChangeErrors({ ...errors, [key]: undefined });
   };
 
@@ -73,7 +74,7 @@ export default function TicketForm({ ticket, subscriptionId, errors, onChangeErr
     <form id={formId} onSubmit={submit} noValidate className="flex flex-col gap-5">
       {!isEdit && (
         <Field id="tt-sub" label="Affected subscription" error={errors.subscription}>
-          <select id="tt-sub" className={err('subscription')} value={form.subscription} onChange={set('subscription')} disabled={!!subscriptionId}>
+          <select id="tt-sub" className={err('subscription')} value={form.subscription} onChange={(e) => update('subscription', e.target.value)} disabled={!!subscriptionId}>
             <option value="">Choose subscription</option>
             {subs.map((s) => (
               <option key={s._id} value={s._id}>
@@ -85,7 +86,7 @@ export default function TicketForm({ ticket, subscriptionId, errors, onChangeErr
       )}
 
       <Field id="tt-category" label="Category" error={errors.category}>
-        <select id="tt-category" className={err('category')} value={form.category} onChange={set('category')}>
+        <select id="tt-category" className={err('category')} value={form.category} onChange={(e) => update('category', e.target.value)}>
           <option value="">Choose category</option>
           {CATEGORIES.map((c) => <option key={c}>{c}</option>)}
         </select>
@@ -101,7 +102,7 @@ export default function TicketForm({ ticket, subscriptionId, errors, onChangeErr
                 form.priority === p ? PRIORITY_ON[p] : 'border-line text-muted hover:text-ink'
               }`}
             >
-              <input type="radio" name="priority" value={p} checked={form.priority === p} onChange={set('priority')} className="sr-only" />
+              <input type="radio" name="priority" value={p} checked={form.priority === p} onChange={(e) => update('priority', e.target.value)} className="sr-only" />
               {p}
             </label>
           ))}
@@ -109,20 +110,20 @@ export default function TicketForm({ ticket, subscriptionId, errors, onChangeErr
       </fieldset>
 
       <Field id="tt-subject" label="Subject" error={errors.subject}>
-        <input id="tt-subject" className={err('subject')} value={form.subject} onChange={set('subject')} placeholder="e.g. Red LOS light on ONT" />
+        <input id="tt-subject" className={err('subject')} value={form.subject} onChange={(e) => update('subject', e.target.value)} placeholder="e.g. Red LOS light on ONT" />
       </Field>
 
       <Field id="tt-desc" label="What is the customer reporting?" error={errors.description}>
-        <textarea id="tt-desc" rows="4" className={err('description')} value={form.description} onChange={set('description')}
+        <textarea id="tt-desc" rows="4" className={err('description')} value={form.description} onChange={(e) => update('description', e.target.value)}
           placeholder="e.g. No internet since this morning, LOS light is red on the router." />
       </Field>
 
       <div className="grid gap-5 sm:grid-cols-2">
         <Field id="tt-contact" label="Call-back number" hint={!isEdit && "Leave empty to use the customer's mobile"} error={errors.contactMobile}>
-          <input id="tt-contact" type="tel" className={`${err('contactMobile')} font-mono`} value={form.contactMobile} onChange={set('contactMobile')} placeholder="0771234567" />
+          <input id="tt-contact" type="tel" className={`${err('contactMobile')} font-mono`} value={form.contactMobile} onChange={(e) => update('contactMobile', e.target.value)} placeholder="0771234567" />
         </Field>
         <Field id="tt-assign" label="Assign to">
-          <select id="tt-assign" className="input" value={form.assignedTo} onChange={set('assignedTo')}>
+          <select id="tt-assign" className="input" value={form.assignedTo} onChange={(e) => update('assignedTo', e.target.value)}>
             <option value="">Unassigned</option>
             {staff.map((u) => <option key={u._id} value={u._id}>{u.name}</option>)}
           </select>

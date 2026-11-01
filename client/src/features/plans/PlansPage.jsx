@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Loader2, Plus } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { createPlan, deletePlan, listPlans, TECHNOLOGIES, updatePlan } from '../../api/plans';
@@ -40,7 +40,7 @@ export default function PlansPage() {
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState('');
 
-  const load = useCallback(async () => {
+  const load = async () => {
     setLoading(true);
     try {
       const data = await listPlans({ search: debouncedSearch, technology, status, sort });
@@ -50,11 +50,11 @@ export default function PlansPage() {
     } finally {
       setLoading(false);
     }
-  }, [debouncedSearch, technology, status, sort]);
+  };
 
   useEffect(() => {
     load();
-  }, [load]);
+  }, [debouncedSearch, technology, status, sort]);
 
   const openForm = (plan) => {
     setFormErrors({});
@@ -105,6 +105,17 @@ export default function PlansPage() {
   const onSale = plans.filter((p) => p.isActive).length;
   const filtered = debouncedSearch || technology || status;
 
+  // Drawer heading for agents, new plans and existing plans
+  let drawerTitle = 'Add plan';
+  let drawerSubtitle = 'New broadband package';
+  if (!isAdmin) {
+    drawerTitle = editing?.name;
+    drawerSubtitle = 'Only admins can change the catalogue';
+  } else if (editing?._id) {
+    drawerTitle = `Edit ${editing.name}`;
+    drawerSubtitle = `${editing.subscriberCount} subscribers on this plan`;
+  }
+
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
@@ -138,16 +149,15 @@ export default function PlansPage() {
         </div>
       ) : (
         <EmptyState
-          {...(filtered
-            ? { title: 'No plans match', message: 'Try a different search or clear the filters.' }
-            : { title: 'No plans yet', message: 'Add the first broadband plan to start selling subscriptions.' })}
+          title={filtered ? 'No plans match' : 'No plans yet'}
+          message={filtered ? 'Try a different search or clear the filters.' : 'Add the first broadband plan to start selling subscriptions.'}
         />
       )}
 
       <Drawer
         open={!!editing}
-        title={!isAdmin ? editing?.name : editing?._id ? `Edit ${editing.name}` : 'Add plan'}
-        subtitle={!isAdmin ? 'Only admins can change the catalogue' : editing?._id ? `${editing.subscriberCount} subscribers on this plan` : 'New broadband package'}
+        title={drawerTitle}
+        subtitle={drawerSubtitle}
         onClose={() => setEditing(null)}
         footer={isAdmin ? (
           <>

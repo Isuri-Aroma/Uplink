@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import api, { TOKEN_KEY } from '../api/client';
 
 const AuthContext = createContext(null);
@@ -7,10 +7,10 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [checking, setChecking] = useState(true); // restoring saved session
 
-  const signOut = useCallback(() => {
+  const signOut = () => {
     localStorage.removeItem(TOKEN_KEY);
     setUser(null);
-  }, []);
+  };
 
   // Check saved token on load
   useEffect(() => {
@@ -19,13 +19,13 @@ export function AuthProvider({ children }) {
       .then((res) => setUser(res.data))
       .catch(signOut)
       .finally(() => setChecking(false));
-  }, [signOut]);
+  }, []);
 
   // Sign out on 401 from the API
   useEffect(() => {
     window.addEventListener('uplink:signed-out', signOut);
     return () => window.removeEventListener('uplink:signed-out', signOut);
-  }, [signOut]);
+  }, []);
 
   const signIn = async (email, password) => {
     const res = await api.post('/auth/login', { email, password });

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, LifeBuoy, Pencil, Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -42,17 +42,17 @@ export default function SubscriptionDetailsPage() {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [reporting, setReporting] = useState(null);
 
-  const load = useCallback(async () => {
+  const load = async () => {
     try {
       setSub(await getSubscription(id));
     } catch (err) {
       setError(readError(err).message);
     }
-  }, [id]);
+  };
 
   useEffect(() => {
     load();
-  }, [load]);
+  }, [id]);
 
   const openAction = (a) => {
     setActionError('');
@@ -100,12 +100,13 @@ export default function SubscriptionDetailsPage() {
   const { plan, customer } = sub;
   const terminated = sub.status === 'Terminated';
   // Same status as the step before = a detail change, not a status change
-  const history = sub.statusHistory
-    .map((h, i) => {
-      const changed = i === 0 || h.status !== sub.statusHistory[i - 1].status;
-      return { ...h, label: changed ? h.status : 'Updated', dot: changed ? DOT[h.status] : 'bg-line' };
-    })
-    .reverse();
+  const history = [];
+  sub.statusHistory.forEach((step, i) => {
+    const changed = i === 0 || step.status !== sub.statusHistory[i - 1].status;
+    const label = changed ? step.status : 'Updated';
+    const dot = changed ? DOT[step.status] : 'bg-line';
+    history.unshift({ ...step, label, dot });
+  });
 
   return (
     <div className="flex flex-col gap-6">

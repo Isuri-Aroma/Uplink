@@ -31,8 +31,9 @@ export default function StaffForm({ user, isSelf, errors, onChangeErrors, onSubm
     confirm: '',
   });
 
-  const set = (key) => (e) => {
-    setForm({ ...form, [key]: e.target.value });
+  // Save a typed value and clear its error
+  const update = (key, value) => {
+    setForm({ ...form, [key]: value });
     if (errors[key]) onChangeErrors({ ...errors, [key]: undefined });
   };
 
@@ -51,11 +52,11 @@ export default function StaffForm({ user, isSelf, errors, onChangeErrors, onSubm
   return (
     <form id={formId} onSubmit={submit} noValidate className="flex flex-col gap-5">
       <Field id="staff-name" label="Full name" error={errors.name}>
-        <input id="staff-name" className={err('name')} value={form.name} onChange={set('name')} placeholder="Dulani Herath" />
+        <input id="staff-name" className={err('name')} value={form.name} onChange={(e) => update('name', e.target.value)} placeholder="Dulani Herath" />
       </Field>
 
       <Field id="staff-email" label="Work email" error={errors.email}>
-        <input id="staff-email" type="email" className={err('email')} value={form.email} onChange={set('email')} placeholder="dulani@uplink.lk" />
+        <input id="staff-email" type="email" className={err('email')} value={form.email} onChange={(e) => update('email', e.target.value)} placeholder="dulani@uplink.lk" />
       </Field>
 
       <fieldset disabled={isSelf}>
@@ -66,7 +67,7 @@ export default function StaffForm({ user, isSelf, errors, onChangeErrors, onSubm
               key={r.value}
               className={`choice-card ${form.role === r.value ? 'choice-card--on' : ''} ${isSelf ? 'cursor-not-allowed opacity-60' : ''}`}
             >
-              <input type="radio" name="role" value={r.value} checked={form.role === r.value} onChange={set('role')} className="sr-only" />
+              <input type="radio" name="role" value={r.value} checked={form.role === r.value} onChange={(e) => update('role', e.target.value)} className="sr-only" />
               <span className="choice-card__title">{r.label}</span>
               <span className="choice-card__text">{r.help}</span>
             </label>
@@ -79,10 +80,10 @@ export default function StaffForm({ user, isSelf, errors, onChangeErrors, onSubm
         <p className="text-sm font-semibold">{isEdit ? 'Reset password' : 'Password'}</p>
         {isEdit && <p className="-mt-3 text-xs text-muted">Leave empty to keep the current password.</p>}
         <Field id="staff-password" label="New password" hint="At least 8 characters, with a letter and a number" error={errors.password}>
-          <input id="staff-password" type="password" autoComplete="new-password" className={err('password')} value={form.password} onChange={set('password')} />
+          <input id="staff-password" type="password" autoComplete="new-password" className={err('password')} value={form.password} onChange={(e) => update('password', e.target.value)} />
         </Field>
         <Field id="staff-confirm" label="Confirm password" error={errors.confirm}>
-          <input id="staff-confirm" type="password" autoComplete="new-password" className={err('confirm')} value={form.confirm} onChange={set('confirm')} />
+          <input id="staff-confirm" type="password" autoComplete="new-password" className={err('confirm')} value={form.confirm} onChange={(e) => update('confirm', e.target.value)} />
         </Field>
       </div>
 

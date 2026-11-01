@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Pencil, Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -37,17 +37,17 @@ export default function TicketDetailsPage() {
   const [actionError, setActionError] = useState('');
   const [confirmDelete, setConfirmDelete] = useState(false);
 
-  const load = useCallback(async () => {
+  const load = async () => {
     try {
       setT(await getTicket(id));
     } catch (err) {
       setError(readError(err).message);
     }
-  }, [id]);
+  };
 
   useEffect(() => {
     load();
-  }, [load]);
+  }, [id]);
 
   const applyStatus = async (note) => {
     setBusy(true);

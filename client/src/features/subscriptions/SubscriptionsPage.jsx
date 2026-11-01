@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ChevronRight, Plus } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -48,7 +48,7 @@ export default function SubscriptionsPage() {
     listPlans({ sort: 'name' }).then((d) => setPlans(d.plans)).catch(() => {});
   }, []);
 
-  const load = useCallback(async () => {
+  const load = async () => {
     setLoading(true);
     try {
       const data = await listSubscriptions({ search: debouncedSearch, status, plan, district, sort });
@@ -59,14 +59,20 @@ export default function SubscriptionsPage() {
     } finally {
       setLoading(false);
     }
-  }, [debouncedSearch, status, plan, district, sort]);
+  };
 
   useEffect(() => {
     load();
-  }, [load]);
+  }, [debouncedSearch, status, plan, district, sort]);
 
-  const total = Object.values(counts).reduce((a, b) => a + b, 0);
+  let total = 0;
+  for (const name of STATUSES) {
+    total += counts[name] || 0;
+  }
+
   const tabs = [['', 'All', total], ...STATUSES.map((s) => [s, s, counts[s] || 0])];
+
+  const filtered = debouncedSearch || status || plan || district;
 
   return (
     <div className="flex flex-col gap-6">
@@ -134,9 +140,8 @@ export default function SubscriptionsPage() {
         </ul>
       ) : (
         <EmptyState
-          {...(debouncedSearch || status || plan || district
-            ? { title: 'No subscriptions match', message: 'Try another tab, search or filter.' }
-            : { title: 'No subscriptions yet', message: 'Create the first broadband order.' })}
+          title={filtered ? 'No subscriptions match' : 'No subscriptions yet'}
+          message={filtered ? 'Try another tab, search or filter.' : 'Create the first broadband order.'}
         />
       )}
 

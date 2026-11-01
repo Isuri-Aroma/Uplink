@@ -5,7 +5,13 @@ import { dataCap, lkr } from '../../utils/format';
 export const TECH_TONE = { Fibre: 'primary', VDSL: 'off', '4G LTE': 'accent', '5G': 'accent' };
 
 // 1-5 bars from download speed
-const level = (down) => (down >= 500 ? 5 : down >= 200 ? 4 : down >= 80 ? 3 : down >= 30 ? 2 : 1);
+function level(down) {
+  if (down >= 500) return 5;
+  if (down >= 200) return 4;
+  if (down >= 80) return 3;
+  if (down >= 30) return 2;
+  return 1;
+}
 
 export default function PlanCard({ plan, canEdit, onOpen, onEdit, onDelete }) {
   const bars = level(plan.downMbps);

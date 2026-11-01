@@ -31,8 +31,9 @@ export default function PlanForm({ plan, readOnly, errors, onChangeErrors, onSub
   const [form, setForm] = useState(() => toForm(plan));
   const [unlimited, setUnlimited] = useState(() => !plan || !plan.dataCapGB);
 
-  const set = (key) => (e) => {
-    setForm({ ...form, [key]: e.target.value });
+  // Save a typed value and clear its error
+  const update = (key, value) => {
+    setForm({ ...form, [key]: value });
     if (errors[key]) onChangeErrors({ ...errors, [key]: undefined });
   };
 
@@ -59,21 +60,21 @@ export default function PlanForm({ plan, readOnly, errors, onChangeErrors, onSub
     <form id={formId} onSubmit={submit} noValidate>
       <fieldset disabled={readOnly} className="flex flex-col gap-5">
         <Field id="plan-name" label="Plan name" error={errors.name}>
-          <input id="plan-name" className={err('name')} value={form.name} onChange={set('name')} placeholder="e.g. Fibre 100" />
+          <input id="plan-name" className={err('name')} value={form.name} onChange={(e) => update('name', e.target.value)} placeholder="e.g. Fibre 100" />
         </Field>
 
         <Field id="plan-technology" label="Technology" error={errors.technology}>
-          <select id="plan-technology" className={err('technology')} value={form.technology} onChange={set('technology')}>
+          <select id="plan-technology" className={err('technology')} value={form.technology} onChange={(e) => update('technology', e.target.value)}>
             {TECHNOLOGIES.map((t) => <option key={t}>{t}</option>)}
           </select>
         </Field>
 
         <div className="grid grid-cols-2 gap-4">
           <Field id="plan-down" label="Download (Mbps)" error={errors.downMbps}>
-            <input id="plan-down" type="number" min="1" className={err('downMbps')} value={form.downMbps} onChange={set('downMbps')} placeholder="100" />
+            <input id="plan-down" type="number" min="1" className={err('downMbps')} value={form.downMbps} onChange={(e) => update('downMbps', e.target.value)} placeholder="100" />
           </Field>
           <Field id="plan-up" label="Upload (Mbps)" error={errors.upMbps}>
-            <input id="plan-up" type="number" min="1" className={err('upMbps')} value={form.upMbps} onChange={set('upMbps')} placeholder="50" />
+            <input id="plan-up" type="number" min="1" className={err('upMbps')} value={form.upMbps} onChange={(e) => update('upMbps', e.target.value)} placeholder="50" />
           </Field>
         </div>
 
@@ -90,17 +91,17 @@ export default function PlanForm({ plan, readOnly, errors, onChangeErrors, onSub
           />
           {!unlimited && (
             <Field id="plan-cap" label="Data cap (GB per month)" error={errors.dataCapGB}>
-              <input id="plan-cap" type="number" min="1" className={err('dataCapGB')} value={form.dataCapGB} onChange={set('dataCapGB')} placeholder="150" />
+              <input id="plan-cap" type="number" min="1" className={err('dataCapGB')} value={form.dataCapGB} onChange={(e) => update('dataCapGB', e.target.value)} placeholder="150" />
             </Field>
           )}
         </div>
 
         <Field id="plan-fee" label="Monthly fee (LKR)" error={errors.monthlyFeeLKR}>
-          <input id="plan-fee" type="number" min="0" className={err('monthlyFeeLKR')} value={form.monthlyFeeLKR} onChange={set('monthlyFeeLKR')} placeholder="6990" />
+          <input id="plan-fee" type="number" min="0" className={err('monthlyFeeLKR')} value={form.monthlyFeeLKR} onChange={(e) => update('monthlyFeeLKR', e.target.value)} placeholder="6990" />
         </Field>
 
         <Field id="plan-desc" label="Description" hint="Optional. Shown to staff when choosing a plan." error={errors.description}>
-          <textarea id="plan-desc" rows="3" className={err('description')} value={form.description} onChange={set('description')} placeholder="e.g. Most popular home fibre plan" />
+          <textarea id="plan-desc" rows="3" className={err('description')} value={form.description} onChange={(e) => update('description', e.target.value)} placeholder="e.g. Most popular home fibre plan" />
         </Field>
 
         <Toggle

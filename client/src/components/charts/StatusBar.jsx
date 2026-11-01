@@ -1,6 +1,10 @@
 // One bar split by share of the total, with counts below
 export default function StatusBar({ items }) {
-  const total = items.reduce((sum, item) => sum + item.value, 0);
+  let total = 0;
+  for (const item of items) {
+    total += item.value;
+  }
+
   return (
     <div className="status-bar">
       <div className="status-bar__track">

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Plus } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -42,7 +42,7 @@ export default function CustomersPage() {
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState('');
 
-  const load = useCallback(async () => {
+  const load = async () => {
     setLoading(true);
     try {
       const data = await listCustomers({ search: debouncedSearch, district, type, sort });
@@ -52,11 +52,11 @@ export default function CustomersPage() {
     } finally {
       setLoading(false);
     }
-  }, [debouncedSearch, district, type, sort]);
+  };
 
   useEffect(() => {
     load();
-  }, [load]);
+  }, [debouncedSearch, district, type, sort]);
 
   const confirmDelete = async () => {
     setDeleting(true);
@@ -110,9 +110,8 @@ export default function CustomersPage() {
         />
       ) : (
         <EmptyState
-          {...(filtered
-            ? { title: 'No customers match', message: 'Try a different search or clear the filters.' }
-            : { title: 'No customers yet', message: 'Register the first broadband customer.' })}
+          title={filtered ? 'No customers match' : 'No customers yet'}
+          message={filtered ? 'Try a different search or clear the filters.' : 'Register the first broadband customer.'}
         />
       )}
 

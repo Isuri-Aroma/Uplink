@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Loader2, Pencil, Plus, Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { createUser, deleteUser, listUsers, updateUser } from '../../api/users';
@@ -40,7 +40,7 @@ export default function StaffPage() {
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState('');
 
-  const load = useCallback(async () => {
+  const load = async () => {
     setLoading(true);
     try {
       const data = await listUsers({ search: debouncedSearch, role, status, sort });
@@ -50,11 +50,11 @@ export default function StaffPage() {
     } finally {
       setLoading(false);
     }
-  }, [debouncedSearch, role, status, sort]);
+  };
 
   useEffect(() => {
     load();
-  }, [load]);
+  }, [debouncedSearch, role, status, sort]);
 
   const isSelf = (u) => u?._id === me?._id;
 

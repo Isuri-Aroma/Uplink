@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowRight, Cable, Clock, LifeBuoy, Plus, Wallet } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -16,10 +16,12 @@ import StatusBar from '../components/charts/StatusBar';
 import SubscriptionDrawer from '../features/subscriptions/SubscriptionDrawer';
 import TicketDrawer from '../features/tickets/TicketDrawer';
 
-const greeting = () => {
-  const h = new Date().getHours();
-  return h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
-};
+function greeting() {
+  const hour = new Date().getHours();
+  if (hour < 12) return 'Good morning';
+  if (hour < 17) return 'Good afternoon';
+  return 'Good evening';
+}
 
 function Panel({ title, link, children, className = '' }) {
   return (
@@ -44,13 +46,13 @@ export default function DashboardPage() {
   const [newSub, setNewSub] = useState(null);
   const [newTicket, setNewTicket] = useState(null);
 
-  const load = useCallback(() => {
+  const load = () => {
     getDashboard().then(setD).catch((err) => toast.error(readError(err).message));
-  }, []);
+  };
 
   useEffect(() => {
     load();
-  }, [load]);
+  }, []);
 
   const today = new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
   const s = d?.statuses || {};

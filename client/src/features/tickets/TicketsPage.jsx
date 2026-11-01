@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Plus } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -35,7 +35,7 @@ export default function TicketsPage() {
   const [drawer, setDrawer] = useState(null);
   const debouncedSearch = useDebounce(search);
 
-  const load = useCallback(async () => {
+  const load = async () => {
     setLoading(true);
     try {
       const data = await listTickets({ search: debouncedSearch, status: view, priority, category, assignedTo, sort });
@@ -46,11 +46,11 @@ export default function TicketsPage() {
     } finally {
       setLoading(false);
     }
-  }, [debouncedSearch, view, priority, category, assignedTo, sort]);
+  };
 
   useEffect(() => {
     load();
-  }, [load]);
+  }, [debouncedSearch, view, priority, category, assignedTo, sort]);
 
   const c = (s) => counts[s] || 0;
   const views = [
@@ -59,8 +59,10 @@ export default function TicketsPage() {
     ['In Progress', 'In progress', c('In Progress')],
     ['Resolved', 'Resolved', c('Resolved')],
     ['Closed', 'Closed', c('Closed')],
-    ['', 'All', Object.values(counts).reduce((a, b) => a + b, 0)],
+    ['', 'All', c('Open') + c('In Progress') + c('Resolved') + c('Closed')],
   ];
+
+  const queueIsClear = view === 'queue' && !debouncedSearch && !priority && !category && !assignedTo;
 
   return (
     <div className="flex flex-col gap-6">
@@ -110,9 +112,8 @@ export default function TicketsPage() {
         </div>
       ) : (
         <EmptyState
-          {...(view === 'queue' && !debouncedSearch && !priority && !category && !assignedTo
-            ? { title: 'Queue is clear', message: 'No open faults right now.' }
-            : { title: 'No tickets match', message: 'Try another view, search or filter.' })}
+          title={queueIsClear ? 'Queue is clear' : 'No tickets match'}
+          message={queueIsClear ? 'No open faults right now.' : 'Try another view, search or filter.'}
         />
       )}
 

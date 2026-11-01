@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Pencil, Plus, Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -35,17 +35,17 @@ export default function CustomerDetailsPage() {
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState('');
 
-  const load = useCallback(async () => {
+  const load = async () => {
     try {
       setCustomer(await getCustomer(id));
     } catch (err) {
       setError(readError(err).message);
     }
-  }, [id]);
+  };
 
   useEffect(() => {
     load();
-  }, [load]);
+  }, [id]);
 
   const confirmDelete = async () => {
     setDeleting(true);

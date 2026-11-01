@@ -41,14 +41,19 @@ export default function SubscriptionForm({ subscription, customerId, errors, onC
     if (!isEdit) listCustomers({ sort: 'name' }).then((d) => setCustomers(d.customers));
   }, [isEdit]);
 
-  const clear = (key) => errors[key] && onChangeErrors({ ...errors, [key]: undefined });
-  const set = (key) => (e) => {
-    setForm({ ...form, [key]: e.target.value });
-    clear(key);
+  const clearError = (key) => {
+    if (errors[key]) onChangeErrors({ ...errors, [key]: undefined });
   };
-  const setAddress = (key) => (e) => {
-    setForm({ ...form, installAddress: { ...form.installAddress, [key]: e.target.value } });
-    clear(`installAddress.${key}`);
+
+  // Save a typed value and clear its error
+  const update = (key, value) => {
+    setForm({ ...form, [key]: value });
+    clearError(key);
+  };
+
+  const updateAddress = (key, value) => {
+    setForm({ ...form, installAddress: { ...form.installAddress, [key]: value } });
+    clearError(`installAddress.${key}`);
   };
 
   const submit = (e) => {
@@ -75,7 +80,7 @@ export default function SubscriptionForm({ subscription, customerId, errors, onC
     <form id={formId} onSubmit={submit} noValidate className="flex flex-col gap-5">
       {!isEdit && (
         <Field id="sub-customer" label="Customer" error={errors.customer}>
-          <select id="sub-customer" className={err('customer')} value={form.customer} onChange={set('customer')} disabled={!!customerId}>
+          <select id="sub-customer" className={err('customer')} value={form.customer} onChange={(e) => update('customer', e.target.value)} disabled={!!customerId}>
             <option value="">Choose customer</option>
             {customers.map((c) => (
               <option key={c._id} value={c._id}>{c.nameWithInitials} · {c.nic}</option>
@@ -90,7 +95,7 @@ export default function SubscriptionForm({ subscription, customerId, errors, onC
         hint={chosenPlan && `${chosenPlan.technology} · ${speed(chosenPlan.downMbps, chosenPlan.upMbps)} · ${lkr(chosenPlan.monthlyFeeLKR)} / month`}
         error={errors.plan}
       >
-        <select id="sub-plan" className={err('plan')} value={form.plan} onChange={set('plan')}>
+        <select id="sub-plan" className={err('plan')} value={form.plan} onChange={(e) => update('plan', e.target.value)}>
           <option value="">Choose plan</option>
           {planOptions.map((p) => (
             <option key={p._id} value={p._id}>{p.name} ({p.technology})</option>
@@ -109,14 +114,14 @@ export default function SubscriptionForm({ subscription, customerId, errors, onC
         {!sameAddress && (
           <>
             <Field id="sub-line1" label="Installation address" error={errors['installAddress.line1']}>
-              <input id="sub-line1" className={err('installAddress.line1')} value={form.installAddress.line1} onChange={setAddress('line1')} placeholder="88, Main Street" />
+              <input id="sub-line1" className={err('installAddress.line1')} value={form.installAddress.line1} onChange={(e) => updateAddress('line1', e.target.value)} placeholder="88, Main Street" />
             </Field>
             <div className="grid gap-4 sm:grid-cols-2">
               <Field id="sub-city" label="City" error={errors['installAddress.city']}>
-                <input id="sub-city" className={err('installAddress.city')} value={form.installAddress.city} onChange={setAddress('city')} placeholder="Negombo" />
+                <input id="sub-city" className={err('installAddress.city')} value={form.installAddress.city} onChange={(e) => updateAddress('city', e.target.value)} placeholder="Negombo" />
               </Field>
               <Field id="sub-district" label="District" error={errors['installAddress.district']}>
-                <select id="sub-district" className={err('installAddress.district')} value={form.installAddress.district} onChange={setAddress('district')}>
+                <select id="sub-district" className={err('installAddress.district')} value={form.installAddress.district} onChange={(e) => updateAddress('district', e.target.value)}>
                   <option value="">Choose district</option>
                   {DISTRICTS.map((d) => <option key={d}>{d}</option>)}
                 </select>
@@ -128,17 +133,17 @@ export default function SubscriptionForm({ subscription, customerId, errors, onC
 
       <div className={`grid gap-5 ${isEdit ? 'sm:grid-cols-2' : ''}`}>
         <Field id="sub-router" label="Router serial (optional)" hint={!isEdit && 'Add it now or after installation'} error={errors.routerSerial}>
-          <input id="sub-router" className={`${err('routerSerial')} font-mono uppercase`} value={form.routerSerial} onChange={set('routerSerial')} placeholder="HW-HG8145V5-0012AB" />
+          <input id="sub-router" className={`${err('routerSerial')} font-mono uppercase`} value={form.routerSerial} onChange={(e) => update('routerSerial', e.target.value)} placeholder="HW-HG8145V5-0012AB" />
         </Field>
         {isEdit && (
           <Field id="sub-used" label="Data used this month (GB)" error={errors.usedGB}>
-            <input id="sub-used" type="number" min="0" step="0.1" className={err('usedGB')} value={form.usedGB} onChange={set('usedGB')} />
+            <input id="sub-used" type="number" min="0" step="0.1" className={err('usedGB')} value={form.usedGB} onChange={(e) => update('usedGB', e.target.value)} />
           </Field>
         )}
       </div>
 
       <Field id="sub-notes" label="Notes (optional)" error={errors.notes}>
-        <textarea id="sub-notes" rows="3" className={err('notes')} value={form.notes} onChange={set('notes')} placeholder="e.g. Second floor, call before visiting" />
+        <textarea id="sub-notes" rows="3" className={err('notes')} value={form.notes} onChange={(e) => update('notes', e.target.value)} placeholder="e.g. Second floor, call before visiting" />
       </Field>
     </form>
   );

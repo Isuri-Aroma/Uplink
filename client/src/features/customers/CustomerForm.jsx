@@ -36,14 +36,19 @@ export default function CustomerForm({ customer, errors, onChangeErrors, onSubmi
   const [form, setForm] = useState(() => toForm(customer));
   const nicInfo = readNic(form.nic);
 
-  const clear = (key) => errors[key] && onChangeErrors({ ...errors, [key]: undefined });
-  const set = (key) => (e) => {
-    setForm({ ...form, [key]: e.target.value });
-    clear(key);
+  const clearError = (key) => {
+    if (errors[key]) onChangeErrors({ ...errors, [key]: undefined });
   };
-  const setAddress = (key) => (e) => {
-    setForm({ ...form, address: { ...form.address, [key]: e.target.value } });
-    clear(`address.${key}`);
+
+  // Save a typed value and clear its error
+  const update = (key, value) => {
+    setForm({ ...form, [key]: value });
+    clearError(key);
+  };
+
+  const updateAddress = (key, value) => {
+    setForm({ ...form, address: { ...form.address, [key]: value } });
+    clearError(`address.${key}`);
   };
 
   const submit = (e) => {
@@ -77,7 +82,7 @@ export default function CustomerForm({ customer, errors, onChangeErrors, onSubmi
               key={t}
               className={`choice ${form.customerType === t ? 'choice--on' : ''}`}
             >
-              <input type="radio" name="customerType" value={t} checked={form.customerType === t} onChange={set('customerType')} className="sr-only" />
+              <input type="radio" name="customerType" value={t} checked={form.customerType === t} onChange={(e) => update('customerType', e.target.value)} className="sr-only" />
               {t}
             </label>
           ))}
@@ -85,36 +90,36 @@ export default function CustomerForm({ customer, errors, onChangeErrors, onSubmi
       </fieldset>
 
       <Field id="cust-initials" label="Name with initials" error={errors.nameWithInitials}>
-        <input id="cust-initials" className={err('nameWithInitials')} value={form.nameWithInitials} onChange={set('nameWithInitials')} placeholder="W. M. S. Bandara" />
+        <input id="cust-initials" className={err('nameWithInitials')} value={form.nameWithInitials} onChange={(e) => update('nameWithInitials', e.target.value)} placeholder="W. M. S. Bandara" />
       </Field>
 
       <Field id="cust-fullname" label="Full name" error={errors.fullName}>
-        <input id="cust-fullname" className={err('fullName')} value={form.fullName} onChange={set('fullName')} placeholder="Wijesinghe Mudiyanselage Sanath Bandara" />
+        <input id="cust-fullname" className={err('fullName')} value={form.fullName} onChange={(e) => update('fullName', e.target.value)} placeholder="Wijesinghe Mudiyanselage Sanath Bandara" />
       </Field>
 
       <Field id="cust-nic" label="NIC number" hint={nicHint} error={errors.nic}>
-        <input id="cust-nic" className={`${err('nic')} font-mono uppercase`} value={form.nic} onChange={set('nic')} placeholder="199012304567" maxLength={12} />
+        <input id="cust-nic" className={`${err('nic')} font-mono uppercase`} value={form.nic} onChange={(e) => update('nic', e.target.value)} placeholder="199012304567" maxLength={12} />
       </Field>
 
       <div className="grid gap-5 sm:grid-cols-2">
         <Field id="cust-mobile" label="Mobile" error={errors.mobile}>
-          <input id="cust-mobile" type="tel" className={`${err('mobile')} font-mono`} value={form.mobile} onChange={set('mobile')} placeholder="0771234567" />
+          <input id="cust-mobile" type="tel" className={`${err('mobile')} font-mono`} value={form.mobile} onChange={(e) => update('mobile', e.target.value)} placeholder="0771234567" />
         </Field>
         <Field id="cust-email" label="Email (optional)" error={errors.email}>
-          <input id="cust-email" type="email" className={err('email')} value={form.email} onChange={set('email')} placeholder="sanath@gmail.com" />
+          <input id="cust-email" type="email" className={err('email')} value={form.email} onChange={(e) => update('email', e.target.value)} placeholder="sanath@gmail.com" />
         </Field>
       </div>
 
       <Field id="cust-line1" label="Address" error={errors['address.line1']}>
-        <input id="cust-line1" className={err('address.line1')} value={form.address.line1} onChange={setAddress('line1')} placeholder="No. 45, Temple Road" />
+        <input id="cust-line1" className={err('address.line1')} value={form.address.line1} onChange={(e) => updateAddress('line1', e.target.value)} placeholder="No. 45, Temple Road" />
       </Field>
 
       <div className="grid gap-5 sm:grid-cols-2">
         <Field id="cust-city" label="City" error={errors['address.city']}>
-          <input id="cust-city" className={err('address.city')} value={form.address.city} onChange={setAddress('city')} placeholder="Kurunegala" />
+          <input id="cust-city" className={err('address.city')} value={form.address.city} onChange={(e) => updateAddress('city', e.target.value)} placeholder="Kurunegala" />
         </Field>
         <Field id="cust-district" label="District" error={errors['address.district']}>
-          <select id="cust-district" className={err('address.district')} value={form.address.district} onChange={setAddress('district')}>
+          <select id="cust-district" className={err('address.district')} value={form.address.district} onChange={(e) => updateAddress('district', e.target.value)}>
             <option value="">Choose district</option>
             {DISTRICTS.map((d) => <option key={d}>{d}</option>)}
           </select>
