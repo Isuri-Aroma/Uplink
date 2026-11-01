@@ -32,9 +32,8 @@ export function errorHandler(err, req, res, next) {
 
   if (status === 500) console.error(err);
 
-  res.status(status).json({
-    message,
-    ...(details && { details }),
-    ...(process.env.NODE_ENV === 'development' && status === 500 && { stack: err.stack }),
-  });
+  const body = { message };
+  if (details) body.details = details;
+  if (process.env.NODE_ENV === 'development' && status === 500) body.stack = err.stack;
+  res.status(status).json(body);
 }

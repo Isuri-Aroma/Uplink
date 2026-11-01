@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import Subscription, { ALLOWED_CHANGES } from '../models/Subscription.js';
+import Subscription, { ALLOWED_CHANGES, STATUSES } from '../models/Subscription.js';
 import Customer from '../models/Customer.js';
 import Plan from '../models/Plan.js';
 import Ticket from '../models/Ticket.js';
@@ -30,10 +30,15 @@ async function findActivePlan(id) {
 }
 
 // Editable fields (status has its own route)
-const pickEditable = ({ installAddress, routerSerial, installDate, usedGB, notes }) =>
-  Object.fromEntries(
-    Object.entries({ installAddress, routerSerial, installDate, usedGB, notes }).filter(([, v]) => v !== undefined)
-  );
+function pickEditable(body) {
+  const fields = {};
+  if (body.installAddress !== undefined) fields.installAddress = body.installAddress;
+  if (body.routerSerial !== undefined) fields.routerSerial = body.routerSerial;
+  if (body.installDate !== undefined) fields.installDate = body.installDate;
+  if (body.usedGB !== undefined) fields.usedGB = body.usedGB;
+  if (body.notes !== undefined) fields.notes = body.notes;
+  return fields;
+}
 
 // GET /api/subscriptions
 export const listSubscriptions = asyncHandler(async (req, res) => {
@@ -48,12 +53,14 @@ export const listSubscriptions = asyncHandler(async (req, res) => {
     );
     filter.$or = [{ accountNo: rx }, { routerSerial: rx }, { customer: { $in: customers.map((c) => c._id) } }];
   }
-  if (plan && mongoose.isValidObjectId(plan)) filter.plan = new mongoose.Types.ObjectId(plan);
+  if (plan && mongoose.isValidObjectId(plan)) filter.plan = plan;
   if (district) filter['installAddress.district'] = district;
 
   // Counts for the status tabs
-  const grouped = await Subscription.aggregate([{ $match: filter }, { $group: { _id: '$status', total: { $sum: 1 } } }]);
-  const counts = Object.fromEntries(grouped.map((g) => [g._id, g.total]));
+  const counts = {};
+  for (const name of STATUSES) {
+    counts[name] = await Subscription.countDocuments({ ...filter, status: name });
+  }
 
   if (status) filter.status = status;
   const subscriptions = await withDetails(Subscription.find(filter)).sort(SORTS[sort] || SORTS.newest);

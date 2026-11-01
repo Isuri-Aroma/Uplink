@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import Ticket, { TICKET_CHANGES } from '../models/Ticket.js';
+import Ticket, { TICKET_CHANGES, TICKET_STATUSES } from '../models/Ticket.js';
 import Subscription from '../models/Subscription.js';
 import Customer from '../models/Customer.js';
 import User from '../models/User.js';
@@ -27,10 +27,15 @@ const withDetails = (query) =>
     ],
   });
 
-const pickEditable = ({ category, priority, subject, description, contactMobile }) =>
-  Object.fromEntries(
-    Object.entries({ category, priority, subject, description, contactMobile }).filter(([, v]) => v !== undefined)
-  );
+function pickEditable(body) {
+  const fields = {};
+  if (body.category !== undefined) fields.category = body.category;
+  if (body.priority !== undefined) fields.priority = body.priority;
+  if (body.subject !== undefined) fields.subject = body.subject;
+  if (body.description !== undefined) fields.description = body.description;
+  if (body.contactMobile !== undefined) fields.contactMobile = body.contactMobile;
+  return fields;
+}
 
 // Staff id, null to unassign, undefined to keep
 async function resolveAssignee(value) {
@@ -62,11 +67,13 @@ export const listTickets = asyncHandler(async (req, res) => {
   if (category) filter.category = category;
   if (assignedTo === 'me') filter.assignedTo = req.user._id;
   else if (assignedTo === 'none') filter.assignedTo = null;
-  else if (assignedTo && mongoose.isValidObjectId(assignedTo)) filter.assignedTo = new mongoose.Types.ObjectId(assignedTo);
+  else if (assignedTo && mongoose.isValidObjectId(assignedTo)) filter.assignedTo = assignedTo;
 
   // Counts for the view tabs
-  const grouped = await Ticket.aggregate([{ $match: filter }, { $group: { _id: '$status', total: { $sum: 1 } } }]);
-  const counts = Object.fromEntries(grouped.map((g) => [g._id, g.total]));
+  const counts = {};
+  for (const name of TICKET_STATUSES) {
+    counts[name] = await Ticket.countDocuments({ ...filter, status: name });
+  }
 
   // "queue" = tickets still being worked on
   if (status === 'queue') filter.status = { $in: ['Open', 'In Progress'] };

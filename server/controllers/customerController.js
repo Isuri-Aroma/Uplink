@@ -37,15 +37,19 @@ export const listCustomers = asyncHandler(async (req, res) => {
   const customers = await Customer.find(filter).sort(SORTS[sort] || SORTS.newest);
 
   // Account numbers per customer
-  const subs = await Subscription.aggregate([
-    { $sort: { createdAt: 1 } },
-    { $group: { _id: '$customer', accounts: { $push: { accountNo: '$accountNo', status: '$status' } } } },
-  ]);
-  const byCustomer = Object.fromEntries(subs.map((s) => [String(s._id), s.accounts]));
-  const rows = customers.map((c) => {
-    const accounts = byCustomer[String(c._id)] || [];
-    return { ...c.toJSON(), accounts, subscriptionCount: accounts.length };
-  });
+  const subscriptions = await Subscription.find({}, 'customer accountNo status').sort({ createdAt: 1 });
+  const accountsByCustomer = {};
+  for (const sub of subscriptions) {
+    const customerId = String(sub.customer);
+    if (!accountsByCustomer[customerId]) accountsByCustomer[customerId] = [];
+    accountsByCustomer[customerId].push({ accountNo: sub.accountNo, status: sub.status });
+  }
+
+  const rows = [];
+  for (const customer of customers) {
+    const accounts = accountsByCustomer[String(customer._id)] || [];
+    rows.push({ ...customer.toJSON(), accounts, subscriptionCount: accounts.length });
+  }
 
   res.json({ count: rows.length, customers: rows });
 });
